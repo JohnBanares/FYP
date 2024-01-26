@@ -1,0 +1,156 @@
+// // Assume you have a user-item interaction dataset
+    // const dataset = [
+    //     { userId: 'user1', restaurantId: 'italian1', rating: 1 },
+    //     { userId: 'user1', restaurantId: 'korean1', rating: 1 },
+    //     { userId: 'user2', restaurantId: 'italian2', rating: 4 },
+    //     { userId: 'user1', restaurantId: 'korean2', rating: 3 },
+    //     { userId: 'user2', restaurantId: 'italian3', rating: 5 },
+    // ];
+    // function collaborativeFiltering(userRatings, targetUserId) {
+    //     const user1Ratings = userRatings.filter(entry => entry.userId === targetUserId);
+    
+    //     // Find users similar to the target user (in this case, user 1)
+    //     const similarUsers = userRatings.filter(entry => entry.userId !== targetUserId);
+    
+    //     // Calculate similarity score based on common restaurant ratings
+    //     const userSimilarities = [];
+    //     for (const user of similarUsers) {
+    //         const commonRatings = user1Ratings.filter(entry => {
+    //             const correspondingRating = userRatings.find(entry2 =>
+    //                 entry2.userId === user.userId && entry2.restaurantId === entry.restaurantId
+    //             );
+    //             return correspondingRating !== undefined;
+    //         });
+    
+    //         const similarityScore = commonRatings.reduce((score, entry) => {
+    //             const user1Rating = user1Ratings.find(e => e.restaurantId === entry.restaurantId).rating;
+    //             const user2Rating = user.rating;
+    
+    //             return score + Math.abs(user1Rating - user2Rating);
+    //         }, 0);
+    
+    //         userSimilarities.push({ userId: user.userId, similarityScore });
+    //     }
+    
+    //     // Sort users by similarity score in ascending order
+    //     userSimilarities.sort((a, b) => a.similarityScore - b.similarityScore);
+    
+    //     // Find restaurants that the target user has not rated yet
+    //     const unratedRestaurants = userRatings
+    //         .filter(entry => entry.userId !== targetUserId)
+    //         .filter(entry => !user1Ratings.some(r => r.restaurantId === entry.restaurantId));
+    
+    //     // Generate restaurant recommendations based on similar users' ratings
+    //     const recommendations = [];
+    //     for (const restaurant of unratedRestaurants) {
+    //         const similarUserRatings = userRatings
+    //             .filter(entry => entry.userId === userSimilarities[0].userId)
+    //             .find(entry => entry.restaurantId === restaurant.restaurantId);
+    
+    //         if (similarUserRatings) {
+    //             recommendations.push({
+    //                 restaurantId: restaurant.restaurantId,
+    //                 predictedRating: similarUserRatings.rating,
+    //             });
+    //         }
+    //     }
+    
+    //     // Sort recommendations by predicted rating in descending order
+    //     recommendations.sort((a, b) => b.predictedRating - a.predictedRating);
+    
+    //     return recommendations;
+    // }
+    
+    // const user1Recommendations = collaborativeFiltering(dataset, 'user1');
+    // console.log('Recommendations for User 1:', user1Recommendations);
+    
+
+//     // Convert user and restaurant IDs to numeric indices
+// const userIds = Array.from(new Set(dataset.map(entry => entry.userId)));
+// const restaurantIds = Array.from(new Set(dataset.map(entry => entry.restaurantId)));
+
+// const userIdToIndex = new Map(userIds.map((id, index) => [id, index]));
+// const restaurantIdToIndex = new Map(restaurantIds.map((id, index) => [id, index]));
+
+// // Create TensorFlow tensors for user, restaurant, and ratings
+// const userIndices = dataset.map(entry => userIdToIndex.get(entry.userId));
+// const restaurantIndices = dataset.map(entry => restaurantIdToIndex.get(entry.restaurantId));
+// const ratings = dataset.map(entry => entry.rating);
+
+// const userTensor = tf.tensor(userIndices, [userIndices.length, 1], 'int32');
+// const restaurantTensor = tf.tensor(restaurantIndices, [restaurantIndices.length, 1], 'int32');
+// const ratingTensor = tf.tensor(ratings, [ratings.length, 1], 'float32');
+
+
+// const numUsers = userIds.length;
+// const numRestaurants = restaurantIds.length;
+
+// const userEmbeddingSize = 10;
+// const restaurantEmbeddingSize = 10;
+
+// const userEmbeddingLayer = tf.layers.embedding({
+//     inputDim: numUsers,
+//     outputDim: userEmbeddingSize,
+// });
+
+// const restaurantEmbeddingLayer = tf.layers.embedding({
+//     inputDim: numRestaurants,
+//     outputDim: restaurantEmbeddingSize,
+// });
+
+// const userInputs = tf.input({ shape: [1] });
+// const restaurantInputs = tf.input({ shape: [1] });
+
+// const userEmbedding = userEmbeddingLayer.apply(userInputs);
+// const restaurantEmbedding = restaurantEmbeddingLayer.apply(restaurantInputs);
+
+// const concatenateLayer = tf.layers.concatenate({ axis: -1 });
+// const concatenated = concatenateLayer.apply([userEmbedding, restaurantEmbedding]);
+
+// const denseLayer1 = tf.layers.dense({
+//     units: 16,
+//     activation: 'relu',
+// });
+
+// const denseLayer2 = tf.layers.dense({
+//     units: 1,
+//     activation: 'linear',
+// });
+
+// const output = denseLayer2.apply(denseLayer1.apply(concatenated));
+
+// const model = tf.model({
+//     inputs: [userInputs, restaurantInputs],
+//     outputs: output,
+// });
+
+// // Compile the model
+// model.compile({
+//     optimizer: 'adam',
+//     loss: 'meanSquaredError',
+//     metrics: ['mse'],
+// });
+
+// // Train the model
+// model.fit([userTensor, restaurantTensor], ratingTensor, { epochs: 50 })
+//     .then(() => {
+//         // Make recommendations for user1 based on their reviews
+//         const user1Index = userIdToIndex.get('user1');
+//         const user1TensorInput = tf.tensor([[user1Index]]);
+
+//         const recommendations = [];
+//         for (let i = 0; i < numRestaurants; i++) {
+//             const restaurantTensorInput = tf.tensor([[i]]);
+//             const prediction = model.predict([user1TensorInput, restaurantTensorInput]);
+//             const predictedRating = prediction.dataSync()[0];
+//             recommendations.push({ restaurantId: restaurantIds[i], predictedRating });
+//         }
+
+//         // Sort recommendations based on predicted ratings
+//         recommendations.sort((a, b) => b.predictedRating - a.predictedRating);
+
+//         console.log(`Top 3 restaurant recommendations for user1:`);
+//         for (let i = 0; i < 3; i++) {
+//             console.log(`${i + 1}. Restaurant: ${recommendations[i].restaurantId}, Predicted Rating: ${recommendations[i].predictedRating}`);
+//         }
+//     });

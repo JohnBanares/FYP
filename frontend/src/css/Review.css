@@ -1,0 +1,105 @@
+.block{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10rem;
+    justify-content: center;
+    height: 30em;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.searchbar{
+    text-align: center;
+    border: 0.25rem solid black;
+}
+#review-search:focus{
+    outline: none;
+}
+#review-search {
+    width: 50%;
+    border: none;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.review-list{
+    width: 25%;
+    margin-right: 5rem;
+    padding: 1rem;
+    border: 0.25rem solid black;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.restaurant-list{
+    margin-top: 3rem;
+    overflow: auto;
+    width: 80%;
+    height: 40rem;
+    border: 1px solid black;
+}
+.restaurant-review{
+    margin: 2rem;
+    min-height: 10rem;
+    width: 80%;
+    border: 2px solid black;
+    text-align: center;
+}
+
+.restaurant-review:hover{
+    cursor: pointer;
+}
+
+.restaurant-review:active{
+    background-color: rgb(185, 180, 180);
+}
+
+.review-form{
+    width: 25%;
+    margin-left: 5rem;
+    padding: 0rem;
+    border-radius: 1.5rem;
+    border: 0.25rem solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.review-form p{
+    margin-bottom: 1.5rem;
+}
+
+.form {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+.rating-box, .desc-box, .confirm{
+    margin: 1rem;
+    border-radius: 1rem;
+
+}
+
+.rating-box, .desc-box{
+    height: 10rem;
+    width: 100%;
+    resize: none;
+    border: 3px solid black;
+    font-size: 1.25rem;
+    padding: 0;
+}
+
+.confirm{
+    margin-top: 5rem;
+    width: 30%;
+    height: 3rem;
+}
+
+input[type=radio]{
+    display: none;
+}
+.star{
+    /* color: orange; */
+    cursor: pointer;
+}
