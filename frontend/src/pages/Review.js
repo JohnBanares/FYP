@@ -91,7 +91,7 @@ function Review(){
         } catch (error) {
           console.error('Error submitting review:', error);
         }
-        // console.log("ratinf", rating);
+        // console.log("ratinf", rating); asd
         // console.log("desc", reviewText);
       };
     return(
