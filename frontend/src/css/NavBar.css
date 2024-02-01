@@ -19,3 +19,6 @@
 .nav ul{
     list-style: none;
 }
+.nav li a{
+    margin-right: 1rem;
+}
