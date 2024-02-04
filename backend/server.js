@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 // const cors = require('cors')
 const reviewsRoutes = require('./routes/reviews')
 const restaurantsRoutes = require('./routes/restaurant')
+const usersRoutes = require('./routes/user')
+
 
 
 const app = express()
@@ -19,6 +21,8 @@ app.use((req, res, next) => {
 //routes
 app.use('/api/reviews', reviewsRoutes)
 app.use('/api/restaurant', restaurantsRoutes)
+app.use('/api/users', usersRoutes)
+
 
 
 mongoose.connect('mongodb+srv://john:fypPass@fyp.prikpj5.mongodb.net/?retryWrites=true&w=majority')

@@ -14,9 +14,9 @@ function Login(){
             <div className="login">
                 <form className="loginForm">
                     <h2>Login Here</h2>
-                    <input className="userName" placeholder="Username"/> 
+                    <input className="userNamelog" placeholder="Username"/> 
                     <br/>
-                    <input className="passWord" placeholder="Password"/>
+                    <input className="passWordlog" placeholder="Password"/>
                     <button type="submit" className="confirmLog">Submit </button>
 
                 </form>

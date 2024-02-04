@@ -45,7 +45,12 @@
 
 }
 
-input{
+.userName,
+.firstName,
+.lastName,
+.passWord,
+.email,
+.passWordConfirm{
     border:none;
     border-radius: 1rem;
 }
