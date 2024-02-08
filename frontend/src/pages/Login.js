@@ -8,14 +8,8 @@
 
         const [email, setEmail] = useState('');
         const [password, setPassword] = useState('');
-        // const [checkEmail, setCheckEmail] = useState(null);
         let check;
-
-        // useEffect(() => {
-        //     if (checkEmail !== null) {
-        //         console.log(checkEmail);
-        //     }
-        // }, [checkEmail])
+        
 
         const handleLogin = async (event) => {
             event.preventDefault();
