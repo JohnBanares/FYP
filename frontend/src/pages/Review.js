@@ -2,6 +2,7 @@ import NavBar from "./NavBar"
 import "../css/Review.css"
 import {FaSearch, FaStar} from "react-icons/fa"
 import { useState, useEffect } from "react"
+
 function Review(){
   const[rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);

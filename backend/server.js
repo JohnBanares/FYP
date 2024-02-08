@@ -1,6 +1,6 @@
 const express = require('express')
 const mongoose = require('mongoose')
-// const cors = require('cors')
+const cors = require('cors')
 const reviewsRoutes = require('./routes/reviews')
 const restaurantsRoutes = require('./routes/restaurant')
 const usersRoutes = require('./routes/user')
@@ -10,7 +10,7 @@ const usersRoutes = require('./routes/user')
 const app = express()
 
 app.use(express.json())
-// app.use(cors());
+app.use(cors());
 
 
 app.use((req, res, next) => {
