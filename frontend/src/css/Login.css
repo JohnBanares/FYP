@@ -65,9 +65,3 @@ input:focus{
     color: white;
     background-color: rgb(94, 187, 94);
 }
-.errorMessage{
-    display: visible;
-    color: red;
-    font-size: 1.15em;
-
-}

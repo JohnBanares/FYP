@@ -1,108 +1,114 @@
 import {Link} from "react-router-dom"
 import { useState, useEffect} from "react"
+import axios from 'axios'
+
 
 import '../css/Signup.css'
+import "../css/General.css"
+
 function SignUp(){
 
     const [username, setUsername] = useState('');
+    // const [checkUsername, setCheckUsername] = useState('');
+
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
+    const [checkName, setCheckName] = useState('');
+
     const [email, setEmail] = useState('');
+    const [checkEmail, setCheckEmail] = useState('');
+
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordconfirm] = useState('');
+    const [checkPass, setCheckPass] = useState('');
+
+
 
     const [users, setUsers] = useState([]);
     const [temp, setTemp] = useState([]);
+
+    const checkEmailExists = async(email) => {
+       //check if email exists
+       try{
+        const response = await axios.get(`http://localhost:3003/api/users/${email}`);
+        //check if user exists
+        if (response.data) {
+            return true;
+        }
+      }catch(error){
+        if (error.response && error.response.status === 404) {
+          return false;
+        } else {
+            console.error('Unexpected error:', error);
+        }
+      }
+    }
     
-    useEffect(() => {
-        // Fetch restaurant data from MongoDB
-        fetch('/api/users')
-          .then(response => response.json())  
-          .then(data => {
-            console.log(data);
-          })
-          .catch(error => {
-            console.error('Error fetching restaurant data:', error);
-          });
-      }, []);
-
-
-
     const handleSignUp = async(event) => {
-        event.preventDefault();
-        // if(username.trim() === '' || firstname.trim() === '' || lastname.trim() === '' || email.trim() === '' || password.trim() === '' || passwordConfirm.trim() === '' ){
-        //     console.log("error");
-        //     return;
-        // }
-        // console.log(username); 
-        // console.log(firstname); 
-        // console.log(lastname); 
-        // console.log(email); 
-        // console.log(password);
-        // console.log(passwordConfirm); 
+      event.preventDefault();
 
-        //check for empty values
-        switch (true) {
-            case username.trim() === '':
-              console.log("Username is empty");
-              return;
-            case firstname.trim() === '':
-              console.log("First name is empty");
-              return;
-            case lastname.trim() === '':
-              console.log("Last name is empty");
-              return;
-            case email.trim() === '':
-              console.log("Email is empty");
-              return;
-            case password.trim() === '':
-              console.log("Password is empty");
-              return;
-            case passwordConfirm.trim() === '':
-              console.log("Password confirmation is empty");
-              return;
-            case password !== passwordConfirm:
-                console.log("Password does not match");
-                return;
-            default:
-                // console.log("Data not empty"); 
-              
-                try {
-                    const userData = {
-                      username: username,
-                      firstName: firstname,
-                      lastName: lastname,
-                      email: email,
-                      password: password,
-                    };
-              
-                    const response = await fetch('/api/users', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify(userData),
-                    });
-              
-                    if (response.ok) {
-                      console.log('User successfully created');
-                      setUsername('');
-                      setFirstname('');
-                      setLastname('');
-                      setEmail('');
-                      setPassword('');
-                      setPasswordconfirm('');
-                    } else {
-                      console.error('Failed to create user:', response.statusText);
-                    }
-                  } catch (error) {
-                    console.error('Error creating user:', error);
-                  }
-                
-                return;
-          }
+      let check =  await checkEmailExists(email);
+      console.log("the function return is", check);
+
+      //check for empty values
+      switch (true) {
+        //check if firstname contains any numbers
+        case /\d/.test(firstname.trim()):
+          setCheckName("intFirstname");
+          return;
+        //check if lastname contains any numbers
+        case /\d/.test(lastname.trim()):
+          setCheckName("intLastname");
+          return;
+        case password !== passwordConfirm:
+          setCheckPass("different");
+          console.log("Password does not match");
+          return;
+        case check === true:
+          setCheckEmail("true");
+          return;
+        default:
+            console.log("Data not empty"); 
+            // console.log(checkEmail);
+            setCheckPass("");
+            setCheckName("");
+            setCheckEmail("");
+
+            // try {
+            //     const userData = {
+            //       username: username,
+            //       firstName: firstname,
+            //       lastName: lastname,
+            //       email: email,
+            //       password: password,
+            //     };
           
-
+            //     const response = await fetch('/api/users', {
+            //       method: 'POST',
+            //       headers: {
+            //         'Content-Type': 'application/json',
+            //       },
+            //       body: JSON.stringify(userData),
+            //     });
+          
+            //     if (response.ok) {
+            //       console.log('User successfully created');
+            //       setUsername('');
+            //       setFirstname('');
+            //       setLastname('');
+            //       setEmail('');
+            //       setPassword('');
+            //       setPasswordconfirm('');
+            //     } else {
+            //       console.error('Failed to create user:', response.statusText);
+            //     }
+            //   } catch (error) {
+            //     console.error('Error creating user:', error);
+            //   }
+            
+            // return;  
+        
+      }
     }
    
 
@@ -113,17 +119,28 @@ function SignUp(){
            <div className='signup-container'>
                 <form onSubmit={handleSignUp} className="signUpForm">
                     <h2>Sign Up</h2>
-                    <input className="userName" value={username} onChange = {(event) => setUsername(event.target.value)} placeholder="Username"/> 
+                    <input className="userName" value={username} onChange = {(event) => setUsername(event.target.value)} placeholder="Username" required="true"/> 
+
                     <br/>
-                    <input className="firstName" value={firstname} onChange ={(event) => setFirstname(event.target.value)} placeholder="First name"/> 
+                    <input className="firstName" value={firstname} onChange ={(event) => setFirstname(event.target.value)} placeholder="First name" required="true"/>
+                    {checkName === "intFirstname" && <p className="errorMessage">First name should not include numbers</p>}
+
                     <br/>
-                    <input className="lastName" value={lastname} onChange={(event) => setLastname(event.target.value)}placeholder="Last name"/> 
+                    <input className="lastName" value={lastname} onChange={(event) => setLastname(event.target.value)}placeholder="Last name" required="true"/> 
+                    {checkName === "intLastname" && <p className="errorMessage">Last name should not include numbers</p>}
+
                     <br/>
-                    <input className="email" value={email} onChange={(event) => setEmail(event.target.value)}placeholder="Email"/>
+                    <input className="email" value={email} onChange={(event) => setEmail(event.target.value)}placeholder="Email" required="true"/>
+                    {checkEmail === "true" && <p className="errorMessage">This email already has an account</p>}
+
+
                     <br/>
-                    <input className="passWord" value={password} onChange={(event) => setPassword(event.target.value)}placeholder="Password"/>
+                    <input className="passWord" value={password} onChange={(event) => setPassword(event.target.value)}placeholder="Password" required="true"/>
+
                     <br/>
-                    <input className="passWordConfirm" value={passwordConfirm} onChange={(event) => setPasswordconfirm(event.target.value)}placeholder="Confirm Password"/>
+                    <input className="passWordConfirm" value={passwordConfirm} onChange={(event) => setPasswordconfirm(event.target.value)}placeholder="Confirm Password" required="true"/>
+                    {checkPass === "different" && <p className="errorMessage">Passwords do not match</p>}
+                    
                     <div className='actions'>
                         <Link to="../login">                        
                             {/* <button className="confirmSign">Back </button> */}
