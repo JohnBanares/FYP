@@ -35,6 +35,7 @@ function Login(){
                     setCheckPass(true);
                     // console.log("logged in");   
                     localStorage.setItem('email', email);
+                    localStorage.setItem('username', check);
                     navigate("/home");
                     // console.log("local sotrage is " + localStorage.getItem('email'));   
                 }

@@ -12,7 +12,7 @@ function Review(){
   const [searchRest, setSearch] = useState('');
 
 
-  const username = "user1";
+  const username = localStorage.getItem('username');
 
   const [restaurants, setRestaurants] = useState([]);
 
@@ -22,12 +22,13 @@ function Review(){
       .then(response => response.json())  
       .then(data => {
         setRestaurants(data);
+        
       })
       .catch(error => {
         console.error('Error fetching restaurant data:', error);
       });
   }, []);
-  // console.log("restaurant", restaurants);
+  console.log("restaurant", restaurants);
 
   // restaurants.map((restaurant) => {
   //   console.log(restaurant.restaurantName);

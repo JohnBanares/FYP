@@ -1,13 +1,12 @@
 const express = require('express')
 const {
-  createReview
+  createReview,
+  getReview
 }=require('../contollers/reviewController')
 const router = express.Router()
 
-router.get('/', (req,res) =>{
-    res.json({mssg: 'Get all reviews'})
-})
 
+router.get('/',getReview)
 router.post('/',createReview)
   
 

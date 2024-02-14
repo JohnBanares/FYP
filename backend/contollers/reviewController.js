@@ -1,7 +1,7 @@
 const { Reviews} = require('../models/reviewModel')
 
 const getReview = async (req, res) => {
-    const reviews = await Review.find({}).sort({createdAt: -1})
+    const reviews = await Reviews.find({}).sort({createdAt: -1})
     res.status(200).json(reviews)
 }
 
@@ -20,4 +20,5 @@ const createReview = async (req, res) => {
 
 module.exports = {
     createReview,
+    getReview,
 };
