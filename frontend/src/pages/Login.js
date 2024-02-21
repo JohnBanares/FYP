@@ -12,6 +12,8 @@ function Login(){
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [authenticated, setAuthenticated] = useState(localStorage.getItem(localStorage.getItem('authenticated') || false));
+
     const [checkEmail, setCheckEmail] = useState(true);
     const [checkPass, setCheckPass] = useState(true);
 
@@ -36,7 +38,9 @@ function Login(){
                     // console.log("logged in");   
                     localStorage.setItem('email', email);
                     localStorage.setItem('username', check);
-                    navigate("/home");
+                    setAuthenticated(true);
+                    localStorage.setItem('authenticated', true);
+                    navigate('/home');
                     // console.log("local sotrage is " + localStorage.getItem('email'));   
                 }
                 else{
@@ -74,7 +78,7 @@ function Login(){
                     <br/>
                     {!checkEmail && <p className="errorMessage">Email doesn't exist</p>}
 
-                    <input className="passWordlog" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" required="true"/>
+                    <input className="passWordlog" type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" required="true"/>
                     {!checkPass && <p className="errorMessage">Incorrect Password</p>}
                     <button type="submit" className="confirmLog">Submit </button>
 

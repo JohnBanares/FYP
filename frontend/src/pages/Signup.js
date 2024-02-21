@@ -173,9 +173,9 @@ function SignUp(){
                     {checkPass === "different" && <p className="errorMessage">Passwords do not match</p>}
                     
                     <div className='actions'>
-                        <Link to="../login">                        
+                        <Link to="../" className="back">                        
                             {/* <button className="confirmSign">Back </button> */}
-                            Back
+                            &larr; Back
                         </Link>
                         <button type="submit" className="confirmSign">Sign Up </button>
                     </div>

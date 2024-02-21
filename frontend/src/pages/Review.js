@@ -17,7 +17,6 @@ function Review(){
   const [restaurants, setRestaurants] = useState([]);
 
   useEffect(() => {
-    // Fetch restaurant data from MongoDB
     fetch('/api/restaurant')
       .then(response => response.json())  
       .then(data => {

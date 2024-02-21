@@ -6,7 +6,9 @@ export default function NavBar(){
 
     function handleLogout(){
         localStorage.setItem('email', "");
-        navigate("../login");
+        localStorage.setItem('username', "");
+        localStorage.setItem('authenticated', false);
+        navigate('../');
     }
     return <nav className="nav">
         <Link to="/home" className="title">DineDirect</Link>
