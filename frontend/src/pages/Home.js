@@ -53,27 +53,6 @@ function Home(){
    
       
 
-      // useEffect(() => {
-      //   // Parse TSV data when component mounts
-      //   const parsedData = parseTsvData(dataTSV);
-      //   setTsvData(parsedData);
-      //   console.log(tsvData);
-      // }, []);
-    
-      // // Function to parse TSV data
-      // const parseTsvData = (tsv) => {
-      //   const rows = tsv.split('\n'); // Split rows by newline character
-      //   const headers = rows[0].split('\t'); // Split headers by tab character
-      //   const data = rows.slice(1).map(row => {
-      //     const values = row.split('\t'); // Split values by tab character
-      //     const rowData = {};
-      //     headers.forEach((header, index) => {
-      //       rowData[header] = values[index];
-      //     });
-      //     return rowData;
-      //   });
-      //   return data;
-      // };
 
     
     // console.log(reviews);
