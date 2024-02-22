@@ -1,19 +1,22 @@
 import axios from 'axios'
 import * as tf from '@tensorflow/tfjs'
 import { useEffect, useState } from 'react'
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from 'react-router-dom'
+import * as d3 from 'd3'
+// import dataTSV from '../images/Restaurant_Reviews.tsv'
 
 import NavBar from "./NavBar"
 
 function Home(){
 
     const[reviews, setReviews] = useState('');
+    // const [tsvData, setTsvData] = useState([]);
     const navigate = useNavigate();
     const[authenticated, setAuthenticated] = useState('');
     const email = localStorage.getItem('email');
     const username = localStorage.getItem('username');
 
-    console.log(authenticated);
+    // console.log(authenticated);
 
     useEffect(() => {
         // Fetch restaurant data from MongoDB
@@ -28,11 +31,12 @@ function Home(){
             console.error('Error fetching restaurant data:', error);
           });
       }, []);
-      console.log('reviews', reviews);
+      // console.log('reviews', reviews);
+
 
       useEffect(() => {
         const loggedInUser = localStorage.getItem('authenticated');
-        console.log(loggedInUser);
+        // console.log(loggedInUser);
         if (loggedInUser === 'true') {
           setAuthenticated(true);
         } else {
@@ -40,6 +44,36 @@ function Home(){
           navigate('../'); 
         }
       }, [navigate]);
+
+      useEffect(() => {
+        d3.tsv("/Restaurant_Reviews.tsv").then(data => {
+          console.log(data); // Process the data here
+        });
+      }, []);
+   
+      
+
+      // useEffect(() => {
+      //   // Parse TSV data when component mounts
+      //   const parsedData = parseTsvData(dataTSV);
+      //   setTsvData(parsedData);
+      //   console.log(tsvData);
+      // }, []);
+    
+      // // Function to parse TSV data
+      // const parseTsvData = (tsv) => {
+      //   const rows = tsv.split('\n'); // Split rows by newline character
+      //   const headers = rows[0].split('\t'); // Split headers by tab character
+      //   const data = rows.slice(1).map(row => {
+      //     const values = row.split('\t'); // Split values by tab character
+      //     const rowData = {};
+      //     headers.forEach((header, index) => {
+      //       rowData[header] = values[index];
+      //     });
+      //     return rowData;
+      //   });
+      //   return data;
+      // };
 
     
     // console.log(reviews);
