@@ -154,3 +154,20 @@
 //             console.log(`${i + 1}. Restaurant: ${recommendations[i].restaurantId}, Predicted Rating: ${recommendations[i].predictedRating}`);
 //         }
 //     });
+
+// let training_padded = reviewText.map(review => 
+//   review.split(' ').map(word => wordIndex[word] || 0)); // Replace unknown words with 0
+
+// let testing_padded = testingText.map(review => 
+//   review.split(' ').map(word => wordIndex[word] || 0)); // Replace unknown words with 0
+
+// const maxLength = Math.max(...training_padded.map(seq => seq.split(' ').length));
+// training_padded = training_padded.map(seq => {
+//   const padLength = maxLength - seq.length;
+//   return seq.concat(Array(padLength).fill(0)); //fill with 0
+// });
+
+// testing_padded = testing_padded.map(seq => {
+//   const padLength = maxLength - seq.length;
+//   return seq.concat(Array(padLength).fill(0)); //fill with 0
+// });

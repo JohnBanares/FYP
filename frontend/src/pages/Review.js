@@ -2,16 +2,22 @@ import NavBar from "./NavBar"
 import "../css/Review.css"
 import {FaSearch, FaStar} from "react-icons/fa"
 import { useState, useEffect } from "react"
+import { useNavigate } from 'react-router-dom'
+
 
 function Review(){
   const[rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
   const [reviewText, setReviewText] = useState('');
   const [selectRestaurant, setselectRestaurant] = useState('');
+  const[authenticated, setAuthenticated] = useState('');
+
   const [text, setText] = useState('');
   const [searchRest, setSearch] = useState('');
 
 
+
+  const navigate = useNavigate();
   const username = localStorage.getItem('username');
 
   const [restaurants, setRestaurants] = useState([]);
@@ -28,6 +34,17 @@ function Review(){
       });
   }, []);
   console.log("restaurant", restaurants);
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('authenticated');
+    // console.log(loggedInUser);
+    if (loggedInUser === 'true') {
+      setAuthenticated(true);
+    } else {
+      setAuthenticated(false);
+      navigate('../'); 
+    }
+  }, [navigate]);
 
   // restaurants.map((restaurant) => {
   //   console.log(restaurant.restaurantName);

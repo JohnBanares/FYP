@@ -47,46 +47,67 @@ function Home(){
 
       useEffect(() => {
         d3.tsv("/Restaurant_Reviews.tsv").then(data => {
-          console.log(data); // Process the data here
+          console.log(data); 
+          const reviewText = data.slice(0, 800).map(reviews => reviews.Review);
+          const testingText  = data.slice(800,1000).map(reviews => reviews.Review);
+          // console.log(testingText);
+          const corpus = reviewText.join(' ');
+
+          const wordIndex = {};
+          let index = 1; //keep count of words
+          corpus.split(' ').forEach(word => {
+              if (!wordIndex[word]) {
+                  wordIndex[word] = index;
+                  index++;
+              }
+          });
+          console.log(wordIndex);
+      
+          // let training_padded = reviewText.map(review => 
+          //   review.split(' ').map(word => wordIndex[word] || 0)); // Replace unknown words with 0
+      
+          // const maxLength = Math.max(...training_padded.map(seq => seq.length));
+          // training_padded = training_padded.map(seq => {
+          //     const padLength = maxLength - seq.length;
+          //     return seq.concat(Array(padLength).fill(0)); //fill with 0
+          // });
+
+          // let testing_padded = testingText.map(review => 
+          //   review.split(' ').map(word => wordIndex[word] || 0)); // Replace unknown words with 0
+      
+          // training_padded = training_padded.map(seq => {
+          //     const padLength = maxLength - seq.length;
+          //     return seq.concat(Array(padLength).fill(0)); //fill with 0
+          // });
+          
+          //map 
+          let training_padded = reviewText.map(review => {
+            return review.split(' ').map(word => wordIndex[word] || 0);
+          });
+          let testing_padded = testingText.map(review => {
+            return review.split(' ').map(word => wordIndex[word] || 0);
+          });
+          
+          //pad
+          const maxLength = Math.max(...training_padded.map(seq => seq.length));
+            training_padded = training_padded.map(seq => {
+            const padLength = maxLength - seq.length;
+            return seq.concat(Array(padLength).fill(0));
+          });
+            testing_padded = testing_padded.map(seq => {
+            const padLength = maxLength - seq.length;
+            return seq.concat(Array(padLength).fill(0));
+          });
+
+  
+          console.log(training_padded);
+          console.log(testing_padded);
         });
+        
       }, []);
    
       
 
-
-    
-    // console.log(reviews);
-
-    // const userReviews = reviews.filter(review => review.username !== 'test3');
-
-    // const userReviewTexts = userReviews.map(review => review.description);
-    // const corpus = userReviewTexts.join(' ');
-
-    // const wordIndex = {};
-    // let index = 1; //keep count of words
-    // corpus.split(' ').forEach(word => {
-    //     if (!wordIndex[word]) {
-    //         wordIndex[word] = index;
-    //         index++;
-    //     }
-    // });
-
-    // let training_padded = userReviewTexts.map(review => 
-    //   review.split(' ').map(word => wordIndex[word] || 0)); // Replace unknown words with 0
-
-    // const maxLength = Math.max(...training_padded.map(seq => seq.length));
-    // training_padded = training_padded.map(seq => {
-    //     const padLength = maxLength - seq.length;
-    //     return seq.concat(Array(padLength).fill(0)); //fill with 0
-    // });
-
-    // console.log(training_padded);
-
-    
- 
-
-    
-  
    
     return(
     <>
