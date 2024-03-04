@@ -8,6 +8,37 @@
     align-items: center;
     justify-content: center;
 }
+.maps .review-form{
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+}
+
+.review-form-back{
+    /* padding-right:  100px; */
+    /* background-color: red; */
+    margin-bottom: 95%;
+    margin-left: 18%;
+    padding: 0rem;
+}
+.review-form-back button {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    border: none;
+    font-size: 1.5rem;
+    background-color: white;
+}
+
+.review-form-details{
+    margin-left: 27%;
+
+    /* padding-right:  100px; */
+    /* background-color: blue; */
+}
 .hidden{
     visibility: hidden;
+}
+.close{
+    margin: 5rem;
 }

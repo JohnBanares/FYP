@@ -87,7 +87,7 @@ const Maps = ({showReviewContainer}) => {
   };
 
   const handleShowReviewContainer = () => {
-    showReviewContainer();
+    showReviewContainer(selectedPlace);
   };
 
   if (!isLoaded) {

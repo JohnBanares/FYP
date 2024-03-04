@@ -15,14 +15,17 @@ function Home(){
 
     const[reviews, setReviews] = useState('');
     // const [tsvData, setTsvData] = useState([]);
-    const navigate = useNavigate();
     const[authenticated, setAuthenticated] = useState('');
     const[reviewContainer, setReviewContainer] = useState(false);
-    const email = localStorage.getItem('email');
-    const username = localStorage.getItem('username');
+    const [selectedPlaceHome, setSelectedPlaceHome] = useState(null);
     const[rating, setRating] = useState(null);
     const [hover, setHover] = useState(null);
     const [reviewText, setReviewText] = useState('');
+
+    const email = localStorage.getItem('email');
+    const username = localStorage.getItem('username');
+    const navigate = useNavigate();
+   
 
     // console.log(authenticated);
 
@@ -53,8 +56,15 @@ function Home(){
         }
       }, [navigate]);
 
-      const showReviewContainer = () => {
+      const showReviewContainer = (place) => {
         setReviewContainer(true);
+        setSelectedPlaceHome(place);
+        // console.log("Selected Place:", selectedPlaceHome.);
+
+      };
+
+      const closeReviewContainer = () => {
+        setReviewContainer(false);
       };
 
       // useEffect(() => {
@@ -117,6 +127,34 @@ function Home(){
       //   });
         
       // }, []);
+
+      const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (rating === null || reviewText.trim() === '') {
+          console.log("Please provide a rating and review text");
+          return;
+        }
+        const num_rating = parseFloat(rating);
+
+        //console.log("Hey" + username )
+        axios.post('http://localhost:3003/api/reviews/', {
+          //   date: getCurrentDate(currentDayIndex)
+          username: username,
+          restaurantName: selectedPlaceHome.restaurantName,
+          rating: num_rating,
+          description: reviewText
+          })
+          .then(response => {
+            console.log('Review submitted successfully');
+            setRating(null);
+            setReviewText('');
+            setSelectedPlaceHome(null);
+          })
+          .catch(error => {
+              console.log(error);
+          });  
+        };
    
       
 
@@ -131,40 +169,54 @@ function Home(){
 
     <div className='maps'>
       <Maps showReviewContainer={showReviewContainer}/>
+      {/*  */}
       <div className={`review-form ${reviewContainer ? '' : 'hidden'}`}>
-        <form className="form">
-            <p>Restaurant:</p>
-            <p>Rating:</p>
-            <div style={{ display: 'flex', color:" yellow", marginTop:'2rem'}}>
-                {[...Array(5)].map((star, index) => {
-                      const currentRating = index + 1;
-                    return(
-                        <label> 
-                            <input 
-                                type="radio" 
-                                name="rating" 
-                                value={currentRating} 
-                                onClick={() => setRating(currentRating)}
-                            />
-                            <FaStar 
-                                className="star" 
-                                size={30} 
-                                color={currentRating <= (hover || rating) ? "orange" : "#D0D0D0"}
-                                onMouseEnter={() => setHover(currentRating)}
-                                onMouseLeave={() => setHover(null)}
-                            />
-                        </label>
-                    ) ; 
-                })}
-            </div>
-            <p> Rating is {rating}</p>
-            {/* <textarea className="rating-box" ></textarea> */}
-            <p>Review:</p>
-            <textarea className="desc-box"  value={reviewText} onChange={(event) => setReviewText(event.target.value)}></textarea>
-            <button type="submit" className="confirm">Submit </button>
-        </form>
 
+        <div className='review-form-details'>
+          <form onSubmit={handleSubmit} className="form">
+              <p>Restaurant:</p>
+
+              { selectedPlaceHome && (
+                <p>{selectedPlaceHome.restaurantName}</p>
+              )}
+
+              <p>Rating:</p>
+              <div style={{ display: 'flex', color:" yellow", marginTop:'2rem'}}>
+                  {[...Array(5)].map((star, index) => {
+                        const currentRating = index + 1;
+                      return(
+                          <label> 
+                              <input 
+                                  type="radio" 
+                                  name="rating" 
+                                  value={currentRating} 
+                                  onClick={() => setRating(currentRating)}
+                              />
+                              <FaStar 
+                                  className="star" 
+                                  size={30} 
+                                  color={currentRating <= (hover || rating) ? "orange" : "#D0D0D0"}
+                                  onMouseEnter={() => setHover(currentRating)}
+                                  onMouseLeave={() => setHover(null)}
+                              />
+                          </label>
+                      ) ; 
+                  })}
+              </div>
+              <p> Rating is {rating}</p>
+              {/* <textarea className="rating-box" ></textarea> */}
+              <p>Review:</p>
+              <textarea className="desc-box"  value={reviewText} onChange={(event) => setReviewText(event.target.value)}></textarea>
+              <button type="submit" className="confirm">Submit </button>
+          </form>
         </div>
+
+        <div className="review-form-back">
+          <button className="close" onClick={closeReviewContainer}>&#215;</button>
+        </div>
+
+      </div>
+
     </div>
     </>
       
