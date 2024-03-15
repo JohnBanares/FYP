@@ -18,7 +18,25 @@ const createReview = async (req, res) => {
     }
 }
 
+const getUserReviews = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const reviews = await Reviews.find({ username });
+
+    if (!reviews) {
+      return res.status(404).json({ error: 'No such user reviews' });
+    }
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 module.exports = {
     createReview,
     getReview,
+    getUserReviews,
 };

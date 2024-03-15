@@ -1,0 +1,206 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;   
+}
+
+.profile-container{
+    display: flex;
+    height: 100vh;
+}
+.profile-reviews-container{
+    margin: 1rem 1rem 1rem 2rem;
+    width: 30vw;
+    overflow: auto;
+}
+.profile-reviews-container h2{
+   text-align: center;
+}
+
+.profile-reviews-container::-webkit-scrollbar {
+    width: 15px;
+}
+
+.profile-reviews-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5); 
+    border-radius: 5px; 
+}
+
+.profile-reviews-container::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1); 
+}
+
+
+.profile-reviews-container-sub{
+    width: 70%;
+    border: 5px solid grey;
+    margin: 1rem 0 1rem 6rem;
+    padding: 1rem;
+    background-color: #fffff0;
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
+}
+.sub-buttons{
+    display: flex;
+    justify-content: center;
+}
+
+.sub-buttons button:hover{
+    cursor: pointer;
+}
+
+.sub-buttons button{
+    height: 5vh;
+    width: 20%;
+    margin: 1rem;
+    font-size: 1rem;
+    border-radius: 10px ;
+    border: none;
+    color: white;
+    background-color: rgb(94, 187, 94);
+}
+
+.profile-info-container{
+    width: 70vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-info-container-sub{
+    width: 30vw;
+    border: 5px solid grey;
+    background-color: #fffff0;
+}
+
+.profile-info-container-top{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 3px solid grey;
+
+}
+
+.profile-info-container-top img {
+    border-radius: 50%;
+    width: 16vh; 
+    height: 16vh; 
+}
+
+.profile-info-container-bottom-text button {
+    height: 2vh;
+    width: 3vw;
+    font-size: 0.8rem;
+    border-radius: 10px ;
+    border: none;
+    color: white;
+    background-color: grey;
+}
+
+.profile-info-container-bottom-text button:hover{
+    cursor: pointer;
+}
+.profile-info-container-bottom{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    padding: 1rem;
+    font-size: 1.25rem;
+}
+.profile-info-container-bottom-text{
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-info-container-bottom-text input {
+    all: initial;
+    font-size: inherit;
+}
+.ci-edit {
+    position: absolute; 
+    right: 40%;
+}
+.ci-edit:hover{
+    cursor: pointer;
+}
+.profile-info-container-bottom-actions{
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+.profile-info-container-bottom-actions button{
+    height: 2vh;
+    width: 5vw;
+    font-size: 0.8rem;
+    border-radius: 10px ;
+    border: none;
+    color: white;
+    background-color: rgb(94, 187, 94);
+}
+
+.profile-info-container-bottom-actions button:hover{
+    cursor: pointer;
+}
+.change-password-form{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    /* font-size: rem; */
+    margin: 0 1rem 1rem 1rem;
+    /* background-color: red; */
+}
+.change-password-form input{
+    all:initial;
+    border: none;
+    border-bottom: 1px solid grey;
+    background-color: white;
+    margin: 0.25rem;
+    border-radius: 5px;
+    position: absolute; 
+    right: 30%;
+}
+.change-password-form label{
+    margin: 0.5rem;
+}
+.change-password-form-close{
+    width: 2%;
+    border: none;
+    background-color: #fffff0;
+    font-size: 1.25rem;
+}
+
+.change-password-form-actions{
+    display: flex;
+    justify-content: flex-end;
+    margin: 0;
+    width: 28vw;
+}
+.change-password-form-actions button{
+    height: 2vh;
+    width: 5vw;
+    font-size: 0.8rem;
+    border-radius: 10px ;
+    border: none;
+    color: white;
+    background-color: rgb(94, 187, 94);
+}
+/* .change-password-form > button{
+    justify-content: flex-start;
+    margin: 0;
+    width: 20vw;
+} */
+.change-password-form button:hover{
+    cursor: pointer;
+}
+@media screen and (max-width: 1211px) {
+    .profile-reviews-container {
+        height: 70vh; /* Adjust the height for smaller screens */
+    }
+    .profile-reviews-container-sub{
+        margin: 0 0 1rem 3rem;
+        font-size: 50%;
+    }
+
+}

@@ -156,67 +156,64 @@ function Home(){
           });  
         };
    
-      
+    
 
    
     return(
     <>
     <NavBar/>
     <div className="home">
-        {/* <h2>Home</h2>
-        <h2>Logged in as {email}: Username: {username}</h2> */}
-    </div>
+      <div className='maps'>
+        <Maps showReviewContainer={showReviewContainer}/>
+        {/*  */}
+        <div className={`review-form ${reviewContainer ? '' : 'hidden'}`}>
 
-    <div className='maps'>
-      <Maps showReviewContainer={showReviewContainer}/>
-      {/*  */}
-      <div className={`review-form ${reviewContainer ? '' : 'hidden'}`}>
+          <div className='review-form-details'>
+            <form onSubmit={handleSubmit} className="form">
+                <p>Restaurant:</p>
 
-        <div className='review-form-details'>
-          <form onSubmit={handleSubmit} className="form">
-              <p>Restaurant:</p>
+                { selectedPlaceHome && (
+                  <p>{selectedPlaceHome.restaurantName}</p>
+                )}
 
-              { selectedPlaceHome && (
-                <p>{selectedPlaceHome.restaurantName}</p>
-              )}
+                <p>Rating:</p>
+                <div style={{ display: 'flex', color:" yellow", marginTop:'2rem'}}>
+                    {[...Array(5)].map((star, index) => {
+                          const currentRating = index + 1;
+                        return(
+                            <label> 
+                                <input 
+                                    type="radio" 
+                                    name="rating" 
+                                    value={currentRating} 
+                                    onClick={() => setRating(currentRating)}
+                                />
+                                <FaStar 
+                                    className="star" 
+                                    size={30} 
+                                    color={currentRating <= (hover || rating) ? "orange" : "#D0D0D0"}
+                                    onMouseEnter={() => setHover(currentRating)}
+                                    onMouseLeave={() => setHover(null)}
+                                />
+                            </label>
+                        ) ; 
+                    })}
+                </div>
+                <p> Rating is {rating}</p>
+                {/* <textarea className="rating-box" ></textarea> */}
+                <p>Review:</p>
+                <textarea className="desc-box"  value={reviewText} onChange={(event) => setReviewText(event.target.value)}></textarea>
+                <button type="submit" className="confirm">Submit </button>
+            </form>
+          </div>
 
-              <p>Rating:</p>
-              <div style={{ display: 'flex', color:" yellow", marginTop:'2rem'}}>
-                  {[...Array(5)].map((star, index) => {
-                        const currentRating = index + 1;
-                      return(
-                          <label> 
-                              <input 
-                                  type="radio" 
-                                  name="rating" 
-                                  value={currentRating} 
-                                  onClick={() => setRating(currentRating)}
-                              />
-                              <FaStar 
-                                  className="star" 
-                                  size={30} 
-                                  color={currentRating <= (hover || rating) ? "orange" : "#D0D0D0"}
-                                  onMouseEnter={() => setHover(currentRating)}
-                                  onMouseLeave={() => setHover(null)}
-                              />
-                          </label>
-                      ) ; 
-                  })}
-              </div>
-              <p> Rating is {rating}</p>
-              {/* <textarea className="rating-box" ></textarea> */}
-              <p>Review:</p>
-              <textarea className="desc-box"  value={reviewText} onChange={(event) => setReviewText(event.target.value)}></textarea>
-              <button type="submit" className="confirm">Submit </button>
-          </form>
-        </div>
+          <div className="review-form-back">
+            <button className="close" onClick={closeReviewContainer}>&#215;</button>
+          </div>
 
-        <div className="review-form-back">
-          <button className="close" onClick={closeReviewContainer}>&#215;</button>
         </div>
 
       </div>
-
     </div>
     </>
       
