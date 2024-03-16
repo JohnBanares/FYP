@@ -35,8 +35,28 @@ const getUserReviews = async (req, res) => {
   }
 }
 
+const deleteReview = async (req, res) => {
+  const { reviewId } = req.params;
+
+  Reviews.findByIdAndDelete(reviewId)
+    .then(result => {
+      if (result) {
+        console.log(`Review with ID ${reviewId} has been deleted.`);
+        res.status(200).json({ message: "Review deleted successfully" });
+      } else {
+        console.log(`No goal found with ID ${reviewId}.`);
+        res.status(404).json({ error: "Goal not found" });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+}
+
 module.exports = {
     createReview,
     getReview,
     getUserReviews,
+    deleteReview,
 };

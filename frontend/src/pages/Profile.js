@@ -65,8 +65,8 @@ function Profile(){
                     <div className="errorMessage">
                         <h5>Are you sure you would like to remove this review</h5>
                         <div className="sub-buttons">
-                            <button onClick={() => handleDecisionClick(index)} style={{ backgroundColor: "grey" }}>Yes</button>
-                            <button onClick={() => handleDecisionClick(index)} style={{ backgroundColor: "grey" }}>No</button>
+                            <button onClick={() => handleDecisionClick(index, "yes" ,reviews)} style={{ backgroundColor: "grey" }}>Yes</button>
+                            <button onClick={() => handleDecisionClick(index,"no")} style={{ backgroundColor: "grey" }}>No</button>
                         </div>
                     </div>
                 )}
@@ -88,31 +88,39 @@ function Profile(){
     };
     
 
-    // const handleDecisionClick = (index) => {
-    //     const state = showDecisionContainer[index];
-    //     const copyState = [...showSubButtons]; 
-    //     if(staet){
-    //         setDecisionContainer(false);
-    //         setSubButtons(true);
+   
 
-    //     }
-    //     else{
-    //         setDecisionContainer(true);
-    //         setSubButtons(true);
-    //     }       
-    // }
-
-    const handleDecisionClick = (index) => {
+    const handleDecisionClick = async(index,decision,reviews) => {
         // const state = showDecisionContainer[index];
         const copyButtonState = [...showSubButtons]; 
         const copyDecisionState = [...showDecisionContainer]; 
 
-        if(copyDecisionState){
-            copyButtonState[index] = true; 
-            setSubButtons(copyButtonState);
+        if(decision === "yes"){
+            // console.log("deleting review", reviews);
 
-            copyDecisionState[index] = false; 
-            setDecisionContainer(copyDecisionState);
+            try {
+                const reviewId = reviews._id;
+                console.log("id is", reviewId);
+                const response = await axios.delete(`http://localhost:3003/api/reviews/${reviewId}`);
+
+                if(response){
+                    // console.log(response);
+
+                    const copyReviews = [...userReviews];
+                    const updatedReviews = copyReviews.filter(review => review._id !== reviewId);
+                    setUserReviews(updatedReviews);
+                    // copyButtonState[index] = true; 
+                    // setSubButtons(copyButtonState);
+
+                    // copyDecisionState[index] = false; 
+                    // setDecisionContainer(copyDecisionState);
+
+                    // window.location.reload();
+                }
+           
+            } catch (error) {
+                console.error('Error fetching user reviews:', error);
+            }
 
         }
         else{
