@@ -17,6 +17,17 @@ function Profile(){
     const [showSubButtons, setSubButtons] = useState([]);
     const [showDecisionContainer, setDecisionContainer] = useState([]);
 
+    // const [, setOldPass] = useState('');
+    const [oldPass, setOldPass] = useState('');
+    const [newPass, setNewPass] = useState('');
+    const [confirmPass, setConfirmPass] = useState('');
+    const [authPass, setAuthPass] = useState(false);
+    const [authMatchPass, setAuthMatchPass] = useState(false);
+
+    const [okMessage, setOkMessage] = useState(false);
+
+
+
 
     const [editInfo, setEditInfo] = useState(false);
     const username = localStorage.getItem('username');
@@ -135,6 +146,7 @@ function Profile(){
     const handleShowChange = () => {
         const state = showChangeContainer;
         if(state){
+            setOldPass('');
             setChangeContainer(false);
         }
         else{
@@ -148,6 +160,55 @@ function Profile(){
         }
         else{
             setEditInfo(true);
+        }
+    };
+
+    const handlePasswordChange = async(event) => {
+        event.preventDefault();
+
+        try{
+            const response = await axios.get(`http://localhost:3003/api/users/${username}`);
+
+            if (newPass.trim() === '' || confirmPass.trim() === '') {
+                console.log("Please fill in both new password and confirm password fields.");
+                setAuthMatchPass(true);
+                return;
+            }
+
+            if(response.data.password === oldPass){
+                setAuthPass(false);
+
+                if(newPass === confirmPass){
+                    console.log("match");
+                    setAuthMatchPass(false);
+                    setChangeContainer(false);
+                    setOkMessage(true);
+                    // setChangeContainer(true);
+                }
+                else{
+                    console.log("no match");
+                    setAuthMatchPass(true);
+                    return
+                }
+            }
+            else{
+                setAuthPass(true);
+                return;
+            }
+
+        }catch (error) {
+            console.error('Error fetching user reviews:', error);
+        }
+
+        // console.log(oldPass);
+    };
+
+    const handleOkMessage = () => {
+        if(okMessage){
+            setOkMessage(false);            
+        }
+        else{
+            setOkMessage(true);
         }
     };
 //   console.log(userReviews);
@@ -176,7 +237,7 @@ function Profile(){
                         <img src={profileImg} alt="temp profile image"/>
                     </div>
 
-                    {!showChangeContainer && (
+                    {!showChangeContainer && !okMessage && (
                         <div className="profile-info-container-bottom">
                             <div className="profile-info-container-bottom-text">
                                 <button onClick={() => handleEditClick()}>Edit</button>
@@ -194,6 +255,7 @@ function Profile(){
                                         <CiEdit className="ci-edit"/>
                                     )}
                                 </label>
+                                {editInfo && (<button onClick={() => handleEditClick()}  style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>)}
                             </div>
 
                             <div className="profile-info-container-bottom-actions">
@@ -203,15 +265,36 @@ function Profile(){
                     )}
               
                     {showChangeContainer && (
-                        <div className="change-password-form">
+                       <div className="change-password-form">
                             <button className="change-password-form-close" onClick={handleShowChange}>&#215;</button>
-                            <label>Old Password: <input type="password" /></label>
-                            <label>New Password: <input type="password" /></label>
-                            <label>Confirm Password: <input type="password" /></label>
+                            
+                            <label>Old Password: <input type="password" value={oldPass} onChange={(event) => setOldPass(event.target.value)} required/></label>
+                            {authPass &&
+                               (<p className="errorMessage" style={{ fontSize: ".9rem" }}>
+                                    Failed to confirm old password
+                                </p>    
+                            )}
+
+                            <label>New Password: <input type="password"  value={newPass} onChange={(event) => setNewPass(event.target.value)}/></label>
+                            <label>Confirm Password: <input type="password"  value={confirmPass} onChange={(event) => setConfirmPass(event.target.value)}/></label>
+                            {authMatchPass &&
+                               (<p className="errorMessage" style={{ fontSize: ".9rem" }}>
+                                    Passwords do not match or fields are either empty. Please try again.
+                                </p>    
+                            )}
+
                             <div className="change-password-form-actions">
-                                <button>Save</button>                                
+                                <button onClick={handlePasswordChange}>Save</button>
                             </div>
-                            {/* <button>Save</button>                                 */}
+                        </div>
+                    )}
+
+                    {okMessage && (
+                        <div className="change-password-form">                            
+                            <h4 style={{ color: "green"}}>Password Change was successful!</h4>
+                            <div className="change-password-form-actions">
+                                <button onClick={handleOkMessage}>Ok</button>
+                            </div>
                         </div>
                     )}
                     {/* <div className="change-password-form">

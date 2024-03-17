@@ -51,9 +51,24 @@ const createUser = async (req, res) => {
     }
 }
 
+const updatePass = async (req, res) => {
+  const { username, newPass } = req.params;
+
+  Users.findOneAndUpdate({ username}, { password: newPass })
+    .then(result => {
+      console.log(result);
+      res.status(200).json({ message: "Goal updated successfully" });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
 module.exports = {
   getUsers,  
   getUser,
   checkUserName,
   createUser,
+  updatePass,
 };
