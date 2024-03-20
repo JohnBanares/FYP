@@ -4,7 +4,8 @@ const {
   getUser,
   checkUserName,
   createUser,
-  updatePass
+  updatePass,
+  updateUsername
 }=require('../contollers/userController')
 const router = express.Router()
 
@@ -13,6 +14,7 @@ router.get('/:email', getUser)
 router.get('/:username', checkUserName)
 router.post('/',createUser)
 router.put('/:username/:newPass',updatePass)
+router.put('/:username/update-username/:usernameCopy',updateUsername)
   
 
 module.exports = router

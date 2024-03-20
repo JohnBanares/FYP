@@ -54,9 +54,24 @@ const deleteReview = async (req, res) => {
     });
 }
 
+const updateUsernameReview = async (req, res) => {
+  const { username, usernameCopy } = req.params;
+
+  Reviews.updateMany({ username}, { username: usernameCopy })
+    .then(result => {
+      console.log(result);
+      res.status(200).json({ message: "Username updated successfully" });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
 module.exports = {
     createReview,
     getReview,
     getUserReviews,
     deleteReview,
+    updateUsernameReview,
 };

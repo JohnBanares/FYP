@@ -1,6 +1,6 @@
 import NavBar from "./NavBar";
 import axios from "axios";
-import { useState, useEffect } from "react"
+import { useRef, useState, useEffect } from "react"
 import foodImg from "../images/food.png";
 import profileImg from "../images/stock.png";
 import { CiEdit } from "react-icons/ci";
@@ -16,6 +16,9 @@ function Profile(){
     const [showChangeContainer, setChangeContainer] = useState(false);
     const [showSubButtons, setSubButtons] = useState([]);
     const [showDecisionContainer, setDecisionContainer] = useState([]);
+    const [usernameCopy, setUsernameCopy] = useState(localStorage.getItem('username'));
+    const [emailCopy, setEmailCopy] = useState(localStorage.getItem('email'));
+
 
     // const [, setOldPass] = useState('');
     const [oldPass, setOldPass] = useState('');
@@ -24,23 +27,30 @@ function Profile(){
     const [authPass, setAuthPass] = useState(false);
     const [authMatchPass, setAuthMatchPass] = useState(false);
 
+    const inputRef = useRef(null);
+    const [readOnlyVal, setReadOnlyVal] = useState(true);
+    const [detailsAuth, setdetailsAuth] = useState('');
+
+
     const [okMessage, setOkMessage] = useState(false);
-
-
-
-
     const [editInfo, setEditInfo] = useState(false);
+
+
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
+  
 
 
     useEffect(() => {
       const fetchUserReviews = async () => {
-          try {
-              const response = await axios.get(`http://localhost:3003/api/reviews/${username}`);
+          try{
+            const response = await axios.get(`http://localhost:3003/api/reviews/${username}`);
             //   console.log(response);
-              setUserReviews(response.data);
-            //   console.log(userReviews);
+            setUserReviews(response.data);
+            console.log(usernameCopy);
+            console.log(username);
+
+              //   console.log(userReviews);
           } catch (error) {
               console.error('Error fetching user reviews:', error);
           }
@@ -154,15 +164,6 @@ function Profile(){
         }   
     }
 
-    const handleEditClick = () => {
-        if(editInfo){
-            setEditInfo(false);            
-        }
-        else{
-            setEditInfo(true);
-        }
-    };
-
     const handlePasswordChange = async(event) => {
         event.preventDefault();
 
@@ -180,15 +181,22 @@ function Profile(){
 
                 if(newPass === confirmPass){
                     console.log("match");
-                    setAuthMatchPass(false);
-                    setChangeContainer(false);
-                    setOkMessage(true);
+                    try{
+                        const res = await axios.put(`http://localhost:3003/api/users/${username}/${newPass}`);
+                        setAuthMatchPass(false);
+                        setChangeContainer(false);
+                        setOkMessage(true);
+
+                    }catch(error){
+                        console.log("no match");
+                        return;
+                    }
                     // setChangeContainer(true);
                 }
                 else{
                     console.log("no match");
                     setAuthMatchPass(true);
-                    return
+                    return;
                 }
             }
             else{
@@ -204,6 +212,9 @@ function Profile(){
     };
 
     const handleOkMessage = () => {
+        setOldPass('');
+        setNewPass('');
+        setConfirmPass('');
         if(okMessage){
             setOkMessage(false);            
         }
@@ -211,6 +222,103 @@ function Profile(){
             setOkMessage(true);
         }
     };
+
+    const handleEditClick = () => {
+        if(editInfo){
+            setEditInfo(false);            
+        }
+        else{
+            setEditInfo(true);
+        }
+    };
+
+    const handleEditDetailsClick = () => {
+        inputRef.current.focus();
+        setReadOnlyVal(false);
+    };
+
+    const handleSaveDetails = async() => {
+        console.log(usernameCopy);
+        // console.log(emailCopy);
+
+        let checkName = await checkUserNameExists(usernameCopy);
+        let checkEmail = await checkEmailExists(emailCopy);
+
+        if (checkName){
+            console.log("this username exists");
+            setdetailsAuth("UserExists");
+            return;
+        }
+
+        // if(checkEmail){
+        //     console.log("this email exists");
+        //     setdetailsAuth("EmailExists");
+        //     return;
+        // }
+
+        setdetailsAuth("noDups");  
+        try{
+            const response = await axios.put(`http://localhost:3003/api/users/${username}/update-username/${usernameCopy}`);
+            
+            if (response.status === 200) {
+                
+                try{
+                    const response2 = await axios.put(`http://localhost:3003/api/reviews/${username}/${usernameCopy}`);
+
+                    if(response2.status === 200){
+                            console.log("Update success");
+                            localStorage.setItem("username", usernameCopy);
+                            await setUsernameCopy('');
+                            window.location.reload();
+                    }else{
+                        console.log("Update failed reviews name with status:", response.status);   
+                    }
+                }catch(error){
+                    console.log("error");
+                }
+            } else {
+                console.log("Update failed username with status:", response.status);
+            }
+        }catch(error){
+            console.log("update failled");
+            return;
+        }
+
+        setEditInfo(false);
+    };
+    const checkUserNameExists = async(username) => {
+        //check if username exists
+        try{
+         const response = await axios.get(`http://localhost:3003/api/users/${username}`);
+         //check if user exists
+         return !!response.data; 
+       }catch(error){
+         if (error.response && error.response.status === 404) {
+           return false;
+         } else {
+             console.error('Unexpected error:', error);
+         }
+       }
+    }
+
+    const checkEmailExists = async(email) => {
+        //check if email exists
+        try{
+         const response = await axios.get(`http://localhost:3003/api/users/${email}`);
+         //check if user exists
+         if (response.data) {
+             return true;
+         }
+       }catch(error){
+         if (error.response && error.response.status === 404) {
+           return false;
+         } else {
+             console.error('Unexpected error:', error);
+         }
+       }
+    }
+
+  
 //   console.log(userReviews);
     
     return(
@@ -243,19 +351,26 @@ function Profile(){
                                 <button onClick={() => handleEditClick()}>Edit</button>
                                 <label>
                                     Username: 
-                                    <input type="text" value={username}  readOnly/> 
+                                    <input type="text" value={usernameCopy}  ref={inputRef} readOnly={readOnlyVal} onChange={(event) => setUsernameCopy(event.target.value)}/>
                                     {editInfo && (
-                                        <CiEdit className="ci-edit"/>
+                                        <CiEdit className="ci-edit" onClick={handleEditDetailsClick}/>
                                     )}
                                 </label>
+                               {detailsAuth === "UserExists" && ( <p className="errorMessage" style={{ fontSize: ".9rem" }}>
+                                    Username already exists
+                                </p> )}
                                 <label>
                                     Email: 
-                                    <input type="email" value={email} readOnly /> 
+                                    <input type="email" value={emailCopy} ref={inputRef} readOnly={readOnlyVal} onChange={(event) => setEmailCopy(event.target.value)} /> 
                                     {editInfo && (
                                         <CiEdit className="ci-edit"/>
                                     )}
                                 </label>
-                                {editInfo && (<button onClick={() => handleEditClick()}  style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>)}
+                               {detailsAuth === "EmailExists" &&( <p className="errorMessage" style={{ fontSize: ".9rem" }}>
+                                    Email already exist
+                                </p> )}
+                              
+                                {editInfo && (<button onClick={() => handleSaveDetails()}  style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>)}
                             </div>
 
                             <div className="profile-info-container-bottom-actions">
