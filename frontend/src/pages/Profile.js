@@ -238,8 +238,12 @@ function Profile(){
     };
 
     const handleSaveDetails = async() => {
-        console.log(usernameCopy);
-        // console.log(emailCopy);
+        console.log("usernaeCopy si", usernameCopy);
+        console.log("username is",username);
+
+        // const response = await axios.get(`http://localhost:3003/api/users`);
+
+        // console.log(response.data);
 
         let checkName = await checkUserNameExists(usernameCopy);
         let checkEmail = await checkEmailExists(emailCopy);
@@ -250,11 +254,11 @@ function Profile(){
             return;
         }
 
-        // if(checkEmail){
-        //     console.log("this email exists");
-        //     setdetailsAuth("EmailExists");
-        //     return;
-        // }
+        if(checkEmail){
+            console.log("this email exists");
+            setdetailsAuth("EmailExists");
+            return;
+        }
 
         setdetailsAuth("noDups");  
         try{
@@ -284,12 +288,14 @@ function Profile(){
             return;
         }
 
+   
+
         setEditInfo(false);
     };
     const checkUserNameExists = async(username) => {
         //check if username exists
         try{
-         const response = await axios.get(`http://localhost:3003/api/users/${username}`);
+         const response = await axios.get(`http://localhost:3003/api/users/checkUsername/${username}`);
          //check if user exists
          return !!response.data; 
        }catch(error){

@@ -79,6 +79,20 @@ const updateUsername = async (req, res) => {
     });
 };
 
+const updateEmail = async (req, res) => {
+  const { username, emailCopy } = req.params;
+
+  Users.findOneAndUpdate({ username}, { email: emailCopy })
+    .then(result => {
+      console.log(result);
+      res.status(200).json({ message: "Email updated successfully" });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
 module.exports = {
   getUsers,  
   getUser,
@@ -86,4 +100,5 @@ module.exports = {
   createUser,
   updatePass,
   updateUsername,
+  updateEmail,
 };

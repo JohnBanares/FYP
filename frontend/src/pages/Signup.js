@@ -51,7 +51,7 @@ function SignUp(){
     const checkUserNameExists = async(username) => {
       //check if username exists
       try{
-       const response = await axios.get(`http://localhost:3003/api/users/${username}`);
+       const response = await axios.get(`http://localhost:3003/api/users/checkUsername/${username}`);
        //check if user exists
        if (response.data) {
            return true;

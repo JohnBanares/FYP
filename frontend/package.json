@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.6",
     "@react-google-maps/api": "^2.19.3",
     "@tensorflow/tfjs": "^4.14.0",
     "@testing-library/jest-dom": "^5.17.0",
