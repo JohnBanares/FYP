@@ -241,53 +241,81 @@ function Profile(){
         console.log("usernaeCopy si", usernameCopy);
         console.log("username is",username);
 
+        console.log("emailcopy si", emailCopy);
+        console.log("email is",email);
+
         // const response = await axios.get(`http://localhost:3003/api/users`);
 
         // console.log(response.data);
 
-        let checkName = await checkUserNameExists(usernameCopy);
-        let checkEmail = await checkEmailExists(emailCopy);
+        const usernameChanged = username !== usernameCopy;
+        const emailChanged = email !== emailCopy;
 
-        if (checkName){
-            console.log("this username exists");
-            setdetailsAuth("UserExists");
-            return;
+        if(usernameChanged){
+            let checkName = await checkUserNameExists(usernameCopy);
+            if (checkName){
+                console.log("this username exists");
+                setdetailsAuth("UserExists");
+                return;
+            }
         }
-
-        if(checkEmail){
-            console.log("this email exists");
-            setdetailsAuth("EmailExists");
-            return;
+        if(emailChanged){ 
+            let checkEmail = await checkEmailExists(emailCopy);
+            if(checkEmail){
+                console.log("this email exists");
+                setdetailsAuth("EmailExists");
+                return;
+            }
         }
 
         setdetailsAuth("noDups");  
-        try{
-            const response = await axios.put(`http://localhost:3003/api/users/${username}/update-username/${usernameCopy}`);
-            
-            if (response.status === 200) {
+        if(usernameChanged){ 
+            try{
+                const response = await axios.put(`http://localhost:3003/api/users/${username}/update-username/${usernameCopy}`);
                 
-                try{
-                    const response2 = await axios.put(`http://localhost:3003/api/reviews/${username}/${usernameCopy}`);
+                if (response.status === 200) {
+                    
+                    try{
+                        const response2 = await axios.put(`http://localhost:3003/api/reviews/${username}/${usernameCopy}`);
 
-                    if(response2.status === 200){
-                            console.log("Update success");
-                            localStorage.setItem("username", usernameCopy);
-                            await setUsernameCopy('');
-                            window.location.reload();
-                    }else{
-                        console.log("Update failed reviews name with status:", response.status);   
+                        if(response2.status === 200){
+                                console.log("Update success");
+                                localStorage.setItem("username", usernameCopy);
+                                await setUsernameCopy('');
+                        }else{
+                            console.log("Update failed reviews name with status:", response.status);   
+                        }
+                    }catch(error){
+                        console.log("error");
                     }
-                }catch(error){
-                    console.log("error");
+                } else {
+                    console.log("Update failed username with status:", response.status);
                 }
-            } else {
-                console.log("Update failed username with status:", response.status);
+            }catch(error){
+                console.log("update failled");
+                return;
             }
-        }catch(error){
-            console.log("update failled");
-            return;
         }
 
+        if(emailChanged){
+            try{
+                const response = await axios.put(`http://localhost:3003/api/users/${username}/update-email/${emailCopy}`);
+                
+                if (response.status === 200) {
+                    console.log("Update success");
+                    localStorage.setItem("email", emailCopy);
+                    await setEmailCopy('');
+                } 
+            }catch(error){
+                console.log("update failled");
+                return;
+            }
+
+        }
+
+        if (usernameChanged || emailChanged) {
+            window.location.reload();
+        }
    
 
         setEditInfo(false);
@@ -369,7 +397,7 @@ function Profile(){
                                     Email: 
                                     <input type="email" value={emailCopy} ref={inputRef} readOnly={readOnlyVal} onChange={(event) => setEmailCopy(event.target.value)} /> 
                                     {editInfo && (
-                                        <CiEdit className="ci-edit"/>
+                                        <CiEdit className="ci-edit"  onClick={handleEditDetailsClick}/>
                                     )}
                                 </label>
                                {detailsAuth === "EmailExists" &&( <p className="errorMessage" style={{ fontSize: ".9rem" }}>
