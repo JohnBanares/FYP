@@ -38,6 +38,9 @@ function Profile(){
 
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
+
+    const [editReview, setEditReviewContainer] = useState([]);
+
   
 
 
@@ -71,14 +74,24 @@ function Profile(){
         return userReviews.map((reviews, index) =>(
             <div key={index} className="profile-reviews-container-sub">
                 <img src={foodImg} alt="temp image" height="auto" width="100%" />           
-                <h3>Restaurant Name: {reviews.restaurantName}</h3>
-                <h3>Rating: {reviews.rating}</h3>
+                <h3>
+                    Restaurant Name: {reviews.restaurantName}
+                    {editReview[index] && (
+                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
+                    )}
+                </h3>
+                <h3>
+                    Rating: {reviews.rating}
+                    {editReview[index] && (
+                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
+                    )}
+                </h3>
                 <h3>Review: {reviews.description}</h3>
                 
                 {showSubButtons[index] && (
                     <div className="sub-buttons">
                         <button onClick={() => handleDelete(index)}>Delete</button>
-                        <button>Edit</button>
+                        <button onClick={() => handleEditReview(index)}>Edit</button>
                     </div>
                 )}
                 
@@ -94,6 +107,16 @@ function Profile(){
             </div>
         ));
     }
+
+    const handleEditReview = (index) => {
+        // console.log("deleting reviews", review);
+
+        const copyReviewState = [...editReview]; 
+
+        copyReviewState[index] = true; 
+        setEditReviewContainer(copyReviewState);
+    };
+    
 
     const handleDelete = (index) => {
         // console.log("deleting reviews", review);

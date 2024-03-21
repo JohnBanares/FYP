@@ -68,10 +68,40 @@ const updateUsernameReview = async (req, res) => {
     });
 };
 
+const updateReviewRating = async (req, res) => {
+  const { username, restaurantName, rating } = req.params;
+
+  Reviews.findOneAndUpdate({ username, restaurantName}, { rating: rating })
+    .then(result => {
+      console.log(result);
+      res.status(200).json({ message: "Review rating updated successfully" });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
+const updateReviewDesc = async (req, res) => {
+  const { username, restaurantName, description } = req.params;
+
+  Reviews.findOneAndUpdate({ username, restaurantName}, { description: description })
+    .then(result => {
+      console.log(result);
+      res.status(200).json({ message: "Review description updated successfully" });
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+};
+
 module.exports = {
     createReview,
     getReview,
     getUserReviews,
     deleteReview,
     updateUsernameReview,
+    updateReviewRating,
+    updateReviewDesc,
 };
