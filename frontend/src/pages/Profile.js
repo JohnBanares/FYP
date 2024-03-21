@@ -40,6 +40,8 @@ function Profile(){
     const email = localStorage.getItem('email');
 
     const [editReview, setEditReviewContainer] = useState([]);
+    const [showEditDecision, setEditDecision] = useState([]);
+
 
   
 
@@ -74,19 +76,26 @@ function Profile(){
         return userReviews.map((reviews, index) =>(
             <div key={index} className="profile-reviews-container-sub">
                 <img src={foodImg} alt="temp image" height="auto" width="100%" />           
-                <h3>
-                    Restaurant Name: {reviews.restaurantName}
-                    {editReview[index] && (
-                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
-                    )}
-                </h3>
+                <h3>Restaurant Name: {reviews.restaurantName}</h3>
                 <h3>
                     Rating: {reviews.rating}
                     {editReview[index] && (
                         <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
                     )}
                 </h3>
-                <h3>Review: {reviews.description}</h3>
+                <h3>
+                    Review: {reviews.description}
+                    {editReview[index] && (
+                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
+                    )}
+                </h3>
+
+                {showEditDecision[index] && (
+                    <div className="sub-buttons">
+                        <button onClick={() => handleEditReviewCancel(index)} style={{ backgroundColor: "#AA4A44" }}>Cancel</button>
+                        <button style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>
+                    </div>
+                )}
                 
                 {showSubButtons[index] && (
                     <div className="sub-buttons">
@@ -112,9 +121,36 @@ function Profile(){
         // console.log("deleting reviews", review);
 
         const copyReviewState = [...editReview]; 
+        const copyEditDecisionState = [...showEditDecision]
+        const copyShowButtons = [...showSubButtons]
 
-        copyReviewState[index] = true; 
+         copyReviewState[index] = true; 
         setEditReviewContainer(copyReviewState);
+
+        copyEditDecisionState[index] = true;
+        setEditDecision(copyEditDecisionState);
+
+        copyShowButtons[index] = false;
+        setSubButtons(copyShowButtons)
+            
+    };
+
+    const handleEditReviewCancel = (index) => {
+        // console.log("deleting reviews", review);
+
+        const copyReviewState = [...editReview]; 
+        const copyEditDecisionState = [...showEditDecision]
+        const copyShowButtons = [...showSubButtons]
+
+        copyReviewState[index] = false; 
+        setEditReviewContainer(copyReviewState);
+
+        copyEditDecisionState[index] = false;
+        setEditDecision(copyEditDecisionState);
+
+        copyShowButtons[index] = true;
+        setSubButtons(copyShowButtons)
+            
     };
     
 
