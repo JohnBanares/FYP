@@ -49,6 +49,8 @@ const Maps = ({showReviewContainer}) => {
   console.log("restaurant", restaurants);
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
+    version: 'weekly',
+
   });
 
   const randomCoordinates = [
@@ -126,3 +128,43 @@ const Maps = ({showReviewContainer}) => {
 };
 
 export default Maps;
+
+// import React, { useState, useEffect } from 'react';
+// import { Loader } from '@googlemaps/js-api-loader';
+
+// const Maps = () => {
+//     const [map, setMap] = useState(null);
+
+//     useEffect(() => {
+//         const loader = new Loader({
+//             apiKey: process.env.REACT_APP_API_KEY,
+//         });
+
+//         loader.load().then(() => {
+//             const google = window.google;
+//             const mapInstance = new google.maps.Map(document.getElementById('map'), {
+//                 center: { lat: -34.397, lng: 150.644 }, // Set initial center coordinates
+//                 zoom: 8, // Set initial zoom level
+//             });
+//             setMap(mapInstance);
+//         });
+//     }, []);
+
+//     return (
+//         <div>
+//             <h1>Map Component</h1>
+//             <div id="map" style={{ width: '100%', height: '400px' }}></div>
+//         </div>
+//     );
+// };
+
+
+// export default Maps;
+
+// WARNING in ./node_modules/@googlemaps/js-api-loader/dist/index.mjs
+// Module Warning (from ./node_modules/source-map-loader/dist/cjs.js):
+// Failed to parse source map from 'C:\FYP\frontend\node_modules\@googlemaps\src\index.ts' file: Error: ENOENT: no such file or directory, open 'C:\FYP\frontend\node_modules\@googlemaps\src\index.ts'
+
+// WARNING in [eslint]
+// src\pages\Maps.js
+//   Line 134:12:  'map' is assigned a value but never used  no-unused-vars

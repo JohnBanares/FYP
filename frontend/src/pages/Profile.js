@@ -41,10 +41,20 @@ function Profile(){
 
     const [editReview, setEditReviewContainer] = useState([]);
     const [showEditDecision, setEditDecision] = useState([]);
+    // const ratingInputRefs = useRef([]);
+    // const [readOnlyState, setReadOnlyState] = useState([]);
+
+    const [newDesc, setNewDesc] = useState('');
+    const [readOnlyState, setReadOnlyState] = useState([]);
+    const [inputValues, setInputValues] = useState([]);
+    const inputRefs = useRef([]);
 
 
-  
-
+    useEffect(() => {
+        setReadOnlyState(Array(userReviews.length).fill(false));
+        setInputValues(userReviews.map(review => review.rating));
+        inputRefs.current = Array(userReviews.length).fill(null);
+    }, [userReviews]);
 
     useEffect(() => {
       const fetchUserReviews = async () => {
@@ -78,13 +88,20 @@ function Profile(){
                 <img src={foodImg} alt="temp image" height="auto" width="100%" />           
                 <h3>Restaurant Name: {reviews.restaurantName}</h3>
                 <h3>
-                    Rating: {reviews.rating}
+                    Rating: 
+                    <input type="text" value={inputValues[index]}  
+                            ref={(inputElement) => (inputRefs.current[index] = inputElement)} 
+                            readOnly={!readOnlyState[index]}
+                            style={{ backgroundColor: "#fffff0", border: "none", margin: "0"}}
+                            onChange={(event) => handleChange(index, event.target.value)}
+                    />
                     {editReview[index] && (
-                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
+                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} onClick={() => handleEditReviewDetails(index)}/>
                     )}
                 </h3>
                 <h3>
-                    Review: {reviews.description}
+                    Review: 
+                    <input type="text" value={reviews.description}  ref={inputRef} readOnly={readOnlyVal} style={{ backgroundColor: "#fffff0", border: "none", margin: "0"}}/>
                     {editReview[index] && (
                         <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
                     )}
@@ -124,7 +141,7 @@ function Profile(){
         const copyEditDecisionState = [...showEditDecision]
         const copyShowButtons = [...showSubButtons]
 
-         copyReviewState[index] = true; 
+        copyReviewState[index] = true; 
         setEditReviewContainer(copyReviewState);
 
         copyEditDecisionState[index] = true;
@@ -151,6 +168,35 @@ function Profile(){
         copyShowButtons[index] = true;
         setSubButtons(copyShowButtons)
             
+    };
+
+    // const handleEditReviewDetails = (index) => {
+    //     if (ratingInputRefs.current[index]) {
+    //         ratingInputRefs.current[index].focus();
+           
+    //         const newReadOnlyState = [...readOnlyState];
+    //         console.log(newReadOnlyState[index]);
+    //         newReadOnlyState[index] = false;
+    //         console.log(newReadOnlyState[index]);
+    //         setReadOnlyState(newReadOnlyState);
+    //     }
+    // };
+
+    const handleEditReviewDetails = (index) => {
+        const newEditStates = [...readOnlyState];
+        newEditStates[index] = !newEditStates[index];
+        setReadOnlyState(newEditStates);
+
+        // Focus the input field when toggling edit mode
+        if (newEditStates[index]) {
+            inputRefs.current[index].focus();
+        }
+    };
+
+    const handleChange = (index, value) => {
+        const newInputValues = [...inputValues];
+        newInputValues[index] = value;
+        setInputValues(newInputValues);
     };
     
 
@@ -216,6 +262,7 @@ function Profile(){
         const state = showChangeContainer;
         if(state){
             setOldPass('');
+            setAuthPass('');
             setChangeContainer(false);
         }
         else{
