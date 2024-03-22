@@ -48,6 +48,9 @@ function Profile(){
     const [readOnlyState, setReadOnlyState] = useState([]);
     const [inputValues, setInputValues] = useState([]);
     const inputRefs = useRef([]);
+    const [revertRating, setRevertRating] = useState('');
+
+
 
 
     useEffect(() => {
@@ -92,7 +95,7 @@ function Profile(){
                     <input type="text" value={inputValues[index]}  
                             ref={(inputElement) => (inputRefs.current[index] = inputElement)} 
                             readOnly={!readOnlyState[index]}
-                            style={{ backgroundColor: "#fffff0", border: "none", margin: "0"}}
+                            style={{ backgroundColor: "#fffff0", border: "none", margin: "0", width: "70%"}}
                             onChange={(event) => handleChange(index, event.target.value)}
                     />
                     {editReview[index] && (
@@ -101,7 +104,7 @@ function Profile(){
                 </h3>
                 <h3>
                     Review: 
-                    <input type="text" value={reviews.description}  ref={inputRef} readOnly={readOnlyVal} style={{ backgroundColor: "#fffff0", border: "none", margin: "0"}}/>
+                    <input type="text" value={reviews.description}  ref={inputRef} readOnly={readOnlyVal} style={{ backgroundColor: "#fffff0", border: "none", margin: "0", width: "70%"}}/>
                     {editReview[index] && (
                         <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
                     )}
@@ -110,7 +113,7 @@ function Profile(){
                 {showEditDecision[index] && (
                     <div className="sub-buttons">
                         <button onClick={() => handleEditReviewCancel(index)} style={{ backgroundColor: "#AA4A44" }}>Cancel</button>
-                        <button style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>
+                        <button button onClick={() => saveReviewChanges(index)} style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>
                     </div>
                 )}
                 
@@ -134,6 +137,20 @@ function Profile(){
         ));
     }
 
+    //------------------------Edit Review--------------------------------------
+
+    //saving changes
+    const saveReviewChanges = (index) => {
+
+        //set rating input back to read only
+        // const newEditStates = [...readOnlyState];
+        // newEditStates[index] = !newEditStates[index];
+        // setReadOnlyState(newEditStates);
+
+        console.log("Rating: ",inputValues[index]);
+    }
+
+    //when user clicks edit button
     const handleEditReview = (index) => {
         // console.log("deleting reviews", review);
 
@@ -152,6 +169,7 @@ function Profile(){
             
     };
 
+    //when user cancels
     const handleEditReviewCancel = (index) => {
         // console.log("deleting reviews", review);
 
@@ -166,39 +184,47 @@ function Profile(){
         setEditDecision(copyEditDecisionState);
 
         copyShowButtons[index] = true;
-        setSubButtons(copyShowButtons)
+        setSubButtons(copyShowButtons);
+
+        //revert rating changes
+        const copyInputValues = [...inputValues];
+        copyInputValues[index] = revertRating;
+        setInputValues(copyInputValues);
+
+        //set rating input back to read only
+        const newEditStates = [...readOnlyState];
+        newEditStates[index] = !newEditStates[index];
+        setReadOnlyState(newEditStates);
             
     };
 
-    // const handleEditReviewDetails = (index) => {
-    //     if (ratingInputRefs.current[index]) {
-    //         ratingInputRefs.current[index].focus();
-           
-    //         const newReadOnlyState = [...readOnlyState];
-    //         console.log(newReadOnlyState[index]);
-    //         newReadOnlyState[index] = false;
-    //         console.log(newReadOnlyState[index]);
-    //         setReadOnlyState(newReadOnlyState);
-    //     }
-    // };
-
+    //when user clicks to edit field
     const handleEditReviewDetails = (index) => {
+
+        // if (readOnlyState[index]) {
+        //     return;
+        // }
+
         const newEditStates = [...readOnlyState];
         newEditStates[index] = !newEditStates[index];
         setReadOnlyState(newEditStates);
 
-        // Focus the input field when toggling edit mode
+        //save state of rating before change
+        setRevertRating(inputValues[index]);
+
         if (newEditStates[index]) {
             inputRefs.current[index].focus();
         }
     };
 
+    // keep tracking of input field
     const handleChange = (index, value) => {
         const newInputValues = [...inputValues];
         newInputValues[index] = value;
         setInputValues(newInputValues);
     };
     
+    //------------------------Delete Review--------------------------------------
 
     const handleDelete = (index) => {
         // console.log("deleting reviews", review);
@@ -213,9 +239,6 @@ function Profile(){
         setDecisionContainer(copyDecisionState);
     };
     
-
-   
-
     const handleDecisionClick = async(index,decision,reviews) => {
         // const state = showDecisionContainer[index];
         const copyButtonState = [...showSubButtons]; 
