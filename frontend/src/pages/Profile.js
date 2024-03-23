@@ -42,28 +42,39 @@ function Profile(){
     const email = localStorage.getItem('email');
 
     const [showEditDecision, setEditDecision] = useState([]);
-    const [editReviewRating, setEditReviewRating] = useState([]);
-    const [editReviewDesc, setEditReviewDesc] = useState([]);
-    const [editRatingConfirm, setEditRatingConfirm] = useState([]);
     const [currentlyEditingIndex, setCurrentlyEditingIndex] = useState(null);
 
-
-    // const ratingInputRefs = useRef([]);
-    // const [readOnlyState, setReadOnlyState] = useState([]);
-
-    const [newDesc, setNewDesc] = useState('');
-    const [readOnlyState, setReadOnlyState] = useState([]);
+    const [editReviewRating, setEditReviewRating] = useState([]);
+    const [editRatingConfirm, setEditRatingConfirm] = useState([]);
+    const [readOnlyStateRating, setReadOnlyStateRating] = useState([]);
     const [inputRatingValues, setInputRatingValues] = useState([]);
-    const inputRefs = useRef([]);
+    const inputRefsRating = useRef([]);
     const [revertRating, setRevertRating] = useState('');
+
+
+    const [editReviewDesc, setEditReviewDesc] = useState([]);
+    const [editDescConfirm, setEditDescConfirm] = useState([]);
+    const [readOnlyStateDesc, setReadOnlyStateDesc] = useState([]);
+    const inputRefsDesc = useRef([]);
+    const [inputDescValues, setInputDescValues] = useState([]);
+    const [revertDesc, setRevertDesc] = useState('');
+
+
+
 
 
 
 
     useEffect(() => {
-        setReadOnlyState(Array(userReviews.length).fill(true));
+        setReadOnlyStateRating(Array(userReviews.length).fill(true));
         setInputRatingValues(userReviews.map(review => review.rating));
-        inputRefs.current = Array(userReviews.length).fill(null);
+        inputRefsRating.current = Array(userReviews.length).fill(null);
+
+        setReadOnlyStateDesc(Array(userReviews.length).fill(true));
+        inputRefsDesc.current = Array(userReviews.length).fill(null);
+        setInputDescValues(userReviews.map(review => review.description));
+
+
     }, [userReviews]);
 
     useEffect(() => {
@@ -100,23 +111,34 @@ function Profile(){
                 <h3>
                     Rating: 
                     <input type="text" value={inputRatingValues[index]}  
-                            ref={(inputElement) => (inputRefs.current[index] = inputElement)} 
-                            readOnly={readOnlyState[index]}
+                            ref={(inputElement) => (inputRefsRating.current[index] = inputElement)} 
+                            readOnly={readOnlyStateRating[index]}
                             style={{ backgroundColor: "#fffff0", border: "none", margin: "0", width: "70%"}}
-                            onChange={(event) => handleChange(index, event.target.value)}
+                            onChange={(event) => handleChangeRating(index, event.target.value)}
                     />
                     {editReviewRating[index] && (
-                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} onClick={() => handleEditReviewDetails(index)}/>
+                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} 
+                        onClick={() => handleEditReviewDetailRating(index)}/>
                     )}
                     {editRatingConfirm[index] &&
-                        (<FaCheck style ={{color: "rgb(94, 187, 94)", cursor: "pointer"}}  onClick={() => handleEditRatingConfirm(index)}/>
+                        (<FaCheck style ={{color: "rgb(94, 187, 94)", cursor: "pointer"}}  
+                        onClick={() => handleEditRatingConfirm(index)}/>
                     )}
                 </h3>
                 <h3>
                     Review: 
-                    <input type="text" value={reviews.description}  ref={inputRef} readOnly={readOnlyVal} style={{ backgroundColor: "#fffff0", border: "none", margin: "0", width: "70%", textOverflow: "ellipsis"}}/>
+                    <input type="text" value={inputDescValues[index]}  
+                           ref={(inputElement) => (inputRefsDesc.current[index] = inputElement)} 
+                           readOnly={readOnlyStateDesc[index]} 
+                           style={{ backgroundColor: "#fffff0", border: "none", margin: "0", width: "70%", textOverflow: "ellipsis"}}
+                           onChange={(event) => handleChangeDesc(index, event.target.value)}/>
                     {editReviewDesc[index] && (
-                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} />
+                        <CiEdit  style={{ cursor: "pointer",  margin: "0 10px" }} 
+                        onClick={() => handleEditReviewDetailDesc(index)}/>
+                    )}
+                     {editDescConfirm[index] &&
+                        (<FaCheck style ={{color: "rgb(94, 187, 94)", cursor: "pointer"}}  
+                        onClick={() => handleEditDescConfirm(index)}/>
                     )}
                 </h3>
 
@@ -149,15 +171,34 @@ function Profile(){
 
     //------------------------Edit Review--------------------------------------
 
+    //when user clicks desc check mark
+    const handleEditDescConfirm = (index) => {
+        const copyDescConfirm = [...editDescConfirm]; 
+        const newEditStates = [...readOnlyStateDesc];
+        const copyReviewDesc = [...editReviewDesc]; 
+
+        //set readonly to true
+        newEditStates[index] = true;
+        setReadOnlyStateDesc(newEditStates);
+
+        //hide rating confirm
+        copyDescConfirm[index] = false;
+        setEditDescConfirm(copyDescConfirm);
+
+        //show edit icon for rating
+        copyReviewDesc[index] = true; 
+        setEditReviewDesc(copyReviewDesc);
+    }
+
     //when user clicks rating check mark
     const handleEditRatingConfirm = (index) => {
         const copyRatingConfirm = [...editRatingConfirm]; 
-        const newEditStates = [...readOnlyState];
+        const newEditStates = [...readOnlyStateRating];
         const copyReviewRating = [...editReviewRating]; 
 
         //set readonly to true
         newEditStates[index] = true;
-        setReadOnlyState(newEditStates);
+        setReadOnlyStateRating(newEditStates);
 
         //hide rating confirm
         copyRatingConfirm[index] = false;
@@ -170,13 +211,9 @@ function Profile(){
 
     //saving changes
     const saveReviewChanges = (index) => {
-
-        //set rating input back to read only
-        // const newEditStates = [...readOnlyState];
-        // newEditStates[index] = !newEditStates[index];
-        // setReadOnlyState(newEditStates);
-
         console.log("Rating: ",inputRatingValues[index]);
+        console.log("Description: ",inputDescValues[index]);
+
     }
 
     //when user clicks edit button
@@ -212,6 +249,9 @@ function Profile(){
 
         //save state of rating before change
         setRevertRating(inputRatingValues[index]);
+
+        //save state of desc before change
+        setRevertDesc(inputDescValues[index]);
             
     };
 
@@ -224,10 +264,16 @@ function Profile(){
         const copyShowButtons = [...showSubButtons];
         const copyEditReviewDesc = [...editReviewDesc];
         const copyRatingConfirm = [...editRatingConfirm]; 
+        const copyDescConfirm = [...editDescConfirm]; 
+
 
         //hide rating confirm
         copyRatingConfirm[index] = false;
         setEditRatingConfirm(copyRatingConfirm);
+
+        //hide desc confirm
+        copyDescConfirm[index] = false;
+        setEditDescConfirm(copyDescConfirm);
 
         //hide edit icon for description
         copyEditReviewDesc[index] = false;
@@ -246,14 +292,24 @@ function Profile(){
         setSubButtons(copyShowButtons);
 
         //revert rating changes
-        const copyInputValues = [...inputRatingValues];
-        copyInputValues[index] = revertRating;
-        setInputRatingValues(copyInputValues);
+        const copyInputValuesRating = [...inputRatingValues];
+        copyInputValuesRating[index] = revertRating;
+        setInputRatingValues(copyInputValuesRating);
+
+        //revert desc changes
+        const copyInputValuesDesc = [...inputDescValues];
+        copyInputValuesDesc[index] = revertDesc;
+        setInputDescValues(copyInputValuesDesc);
 
         //set rating input back to read only
-        const newEditStates = [...readOnlyState];
+        const newEditStates = [...readOnlyStateRating];
         newEditStates[index] = true;
-        setReadOnlyState(newEditStates);
+        setReadOnlyStateRating(newEditStates);
+
+        //set desc input back to read only
+        const newEditStatesDesc = [...readOnlyStateDesc];
+        newEditStatesDesc[index] = true;
+        setReadOnlyStateDesc(newEditStatesDesc);
 
         //set currenteditingindex to null to indicate that another can be edited
         setCurrentlyEditingIndex(null);
@@ -261,7 +317,7 @@ function Profile(){
     };
 
     //when user clicks to edit field
-    const handleEditReviewDetails = (index) => {
+    const handleEditReviewDetailRating = (index) => {
 
         const copyRatingConfirm = [...editRatingConfirm]; 
         const copyReviewRating = [...editReviewRating]; 
@@ -275,21 +331,54 @@ function Profile(){
         setEditReviewRating(copyReviewRating);
 
         //allow user input
-        const newEditStates = [...readOnlyState];
+        const newEditStates = [...readOnlyStateRating];
         newEditStates[index] = false;
-        setReadOnlyState(newEditStates);
+        setReadOnlyStateRating(newEditStates);
 
 
         if (!newEditStates[index]) {
-            inputRefs.current[index].focus();
+            inputRefsRating.current[index].focus();
         }
     };
 
-    // keep tracking of input field
-    const handleChange = (index, value) => {
+    //when user clicks to edit field
+    const handleEditReviewDetailDesc = (index) => {
+
+        const copyReviewDesc = [...editReviewDesc]; 
+        const copyDescConfirm = [...editDescConfirm]; 
+
+        //show desc confirm
+        copyDescConfirm[index] = true;
+        setEditDescConfirm(copyDescConfirm);
+
+        //hide edit rating icon
+        copyReviewDesc[index] = false; 
+        setEditReviewDesc(copyReviewDesc);
+
+
+        //allow user input
+        const newEditStates = [...readOnlyStateDesc];
+        newEditStates[index] = false;
+        setReadOnlyStateDesc(newEditStates);
+
+
+        if (!newEditStates[index]) {
+            inputRefsDesc.current[index].focus();
+        }
+    };
+
+    // keep tracking of input field rating
+    const handleChangeRating = (index, value) => {
         const newInputValues = [...inputRatingValues];
         newInputValues[index] = value;
         setInputRatingValues(newInputValues);
+    };
+
+    // keep tracking of input field desc
+    const handleChangeDesc = (index, value) => {
+        const newInputDescValues = [...inputDescValues];
+        newInputDescValues[index] = value;
+        setInputDescValues(newInputDescValues);
     };
     
     //------------------------Delete Review------------------------------------------------------------------------------------
