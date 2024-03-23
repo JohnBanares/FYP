@@ -17,6 +17,6 @@ router.get('/:username',getUserReviews)
 router.delete('/:reviewId',deleteReview)
 router.put('/:username/:usernameCopy', updateUsernameReview)  
 router.put('/update-review-rating/:username/:restaurantName/:rating', updateReviewRating)  
-router.put('/update-review-description/:username/:restaurantname/:description', updateReviewDesc)  
+router.put('/update-review-description/:username/:restaurantName/:description', updateReviewDesc)  
 
 module.exports = router

@@ -60,11 +60,6 @@ function Profile(){
     const [revertDesc, setRevertDesc] = useState('');
 
 
-
-
-
-
-
     useEffect(() => {
         setReadOnlyStateRating(Array(userReviews.length).fill(true));
         setInputRatingValues(userReviews.map(review => review.rating));
@@ -145,7 +140,7 @@ function Profile(){
                 {showEditDecision[index] && (
                     <div className="sub-buttons">
                         <button onClick={() => handleEditReviewCancel(index)} style={{ backgroundColor: "#AA4A44" }}>Cancel</button>
-                        <button button onClick={() => saveReviewChanges(index)} style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>
+                        <button button onClick={() => saveReviewChanges(index, reviews.restaurantName)} style={{ backgroundColor: "rgb(94, 187, 94)" }}>Save</button>
                     </div>
                 )}
                 
@@ -210,15 +205,52 @@ function Profile(){
     }
 
     //saving changes
-    const saveReviewChanges = (index) => {
-        console.log("Rating: ",inputRatingValues[index]);
-        console.log("Description: ",inputDescValues[index]);
+    const saveReviewChanges = async(index, restaurantName) => {
+        const copyInputValuesDesc = [...inputDescValues];
+        const copyInputValuesRating = [...inputRatingValues];
+        const copyEditDescConfirm = [...editDescConfirm];
+        const copyEditRatingConfirm = [...editRatingConfirm];
+
+
+        //dont allow save while description confirm is on
+
+        const ratingChanged = copyInputValuesRating[index] !== revertRating;
+        const descriptionChanged = copyInputValuesDesc[index] != revertDesc;
+
+
+        if(copyEditDescConfirm[index] || copyEditRatingConfirm[index]) return;
+
+        if(ratingChanged){
+            const rating = copyInputValuesRating[index];
+            try{
+                const res = await axios.put(`http://localhost:3003/api/reviews//update-review-rating/${username}/${restaurantName}/${rating}`);
+            }catch(error){
+                console.log("no match");
+                return;
+            }            
+        }   
+
+        if(descriptionChanged){
+            const description = copyInputValuesDesc[index];
+            try{
+                const res = await axios.put(`http://localhost:3003/api/reviews//update-review-description/${username}/${restaurantName}/${description}`);
+            }catch(error){
+                console.log("no match");
+                return;
+            }      
+        }
+
+        if(descriptionChanged || ratingChanged){
+            window.location.reload()
+        }
+     
+
 
     }
 
     //when user clicks edit button
     const handleEditReview = (index) => {
-        // console.log("deleting reviews", review);
+        // console.log("editing restaurant", restaurantName);
 
         const copyEditDecisionState = [...showEditDecision];
         const copyShowButtons = [...showSubButtons];
