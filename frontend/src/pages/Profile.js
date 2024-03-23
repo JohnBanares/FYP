@@ -45,6 +45,8 @@ function Profile(){
     const [editReviewRating, setEditReviewRating] = useState([]);
     const [editReviewDesc, setEditReviewDesc] = useState([]);
     const [editRatingConfirm, setEditRatingConfirm] = useState([]);
+    const [currentlyEditingIndex, setCurrentlyEditingIndex] = useState(null);
+
 
     // const ratingInputRefs = useRef([]);
     // const [readOnlyState, setReadOnlyState] = useState([]);
@@ -153,7 +155,6 @@ function Profile(){
         const newEditStates = [...readOnlyState];
         const copyReviewRating = [...editReviewRating]; 
 
-
         //set readonly to true
         newEditStates[index] = true;
         setReadOnlyState(newEditStates);
@@ -186,6 +187,12 @@ function Profile(){
         const copyShowButtons = [...showSubButtons];
         const copyEditReviewDesc = [...editReviewDesc];
         const copyReviewRating = [...editReviewRating]; 
+
+        //check if a review container is already editing then retun else set it to editing
+        if(currentlyEditingIndex === "editing") return;
+
+        setCurrentlyEditingIndex("editing");
+
     
         //show edit icon for description
         copyEditReviewDesc[index] = true;
@@ -195,9 +202,11 @@ function Profile(){
         copyReviewRating[index] = true; 
         setEditReviewRating(copyReviewRating);
 
+        //show cancel and save buttons
         copyEditDecisionState[index] = true;
         setEditDecision(copyEditDecisionState);
 
+        //hide delete and edit buttons
         copyShowButtons[index] = false;
         setSubButtons(copyShowButtons);
 
@@ -245,6 +254,9 @@ function Profile(){
         const newEditStates = [...readOnlyState];
         newEditStates[index] = true;
         setReadOnlyState(newEditStates);
+
+        //set currenteditingindex to null to indicate that another can be edited
+        setCurrentlyEditingIndex(null);
             
     };
 
@@ -262,17 +274,11 @@ function Profile(){
         copyReviewRating[index] = false; 
         setEditReviewRating(copyReviewRating);
 
-
-        // if (readOnlyState[index]) {
-        //     return;
-        // }
-
+        //allow user input
         const newEditStates = [...readOnlyState];
         newEditStates[index] = false;
         setReadOnlyState(newEditStates);
 
-        // //save state of rating before change
-        // setRevertRating(inputRatingValues[index]);
 
         if (!newEditStates[index]) {
             inputRefs.current[index].focus();
