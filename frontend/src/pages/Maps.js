@@ -31,7 +31,7 @@ const fakePlace1 = {
 // };
 
 
-const Maps = ({showReviewContainer, showUserReviews}) => {
+const Maps = ({showReviewContainer, showUserReviews, close}) => {
 
   const [restaurants, setRestaurants] = useState([]);
 
@@ -80,6 +80,7 @@ const Maps = ({showReviewContainer, showUserReviews}) => {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedPosition, setselectedPosition] = useState(null);
 
+
   const handleMarkerClick = (place, position) => {
     setSelectedPlace(place);
     setselectedPosition(position);
@@ -87,6 +88,7 @@ const Maps = ({showReviewContainer, showUserReviews}) => {
 
   const handleInfoWindowClose = () => {
     setSelectedPlace(null);
+    close(false);
   };
 
   const handleShowReviewContainer = () => {

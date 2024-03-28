@@ -16,22 +16,28 @@ import Maps from "./Maps"
 
 function Home() {
 
-  const [reviews, setReviews] = useState('');
-  // const [tsvData, setTsvData] = useState([]);
-  const [authenticated, setAuthenticated] = useState('');
-  const [selectedPlaceHome, setSelectedPlaceHome] = useState(null);
-  const [rating, setRating] = useState(null);
-  const [hover, setHover] = useState(null);
-  const [reviewText, setReviewText] = useState('');
+	const [reviews, setReviews] = useState('');
+	// const [tsvData, setTsvData] = useState([]);
+	const [authenticated, setAuthenticated] = useState('');
+	const [selectedPlaceHome, setSelectedPlaceHome] = useState(null);
+	const [rating, setRating] = useState(null);
+	const [hover, setHover] = useState(null);
+	const [reviewText, setReviewText] = useState('');
 
-  const email = localStorage.getItem('email');
-  const username = localStorage.getItem('username');
-  const navigate = useNavigate();
+	const email = localStorage.getItem('email');
+	const username = localStorage.getItem('username');
+	const navigate = useNavigate();
 
 
-  const [reviewContainer, setReviewContainer] = useState(false);
-  const [showReview, setShowReview] = useState(false);
-  const [userReviews, setUserReviews] = useState([]);
+	const [reviewContainer, setReviewContainer] = useState(false);
+	const [showReview, setShowReview] = useState(false);
+	const [userReviews, setUserReviews] = useState([]);
+
+	const [clicked, setClicked] = useState([]);
+  
+  	useEffect(() => {
+		setClicked(Array(userReviews.length).fill(false));	
+	}, [userReviews]);
 
 
   // console.log(authenticated);
@@ -73,14 +79,16 @@ function Home() {
   const closeReviewContainer = () => {
     setReviewContainer(false);
 };
+const close = () => {
+	setShowReview(close);
+}
+// useEffect(() => {
+//   console.log("user reviews:");
+//     userReviews.forEach(review => {
+//         console.log("Rating:", review.rating);
+//     });
 
-useEffect(() => {
-  console.log("user reviews:");
-    userReviews.forEach(review => {
-        console.log("Rating:", review.rating);
-    });
-
-}, [userReviews]);
+// }, [userReviews]);
 
   const showUserReviews = async (place) => {
     // console.log(place.restaurantName);
@@ -113,50 +121,52 @@ useEffect(() => {
     const num_rating = parseFloat(rating);
 
     //console.log("Hey" + username )
-    axios.post('http://localhost:3003/api/reviews/', {
-      //   date: getCurrentDate(currentDayIndex)
-      username: username,
-      restaurantName: selectedPlaceHome.restaurantName,
-      rating: num_rating,
-      description: reviewText
-    })
-      .then(response => {
-        console.log('Review submitted successfully');
-        setRating(null);
-        setReviewText('');
-        setSelectedPlaceHome(null);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
+	axios.post('http://localhost:3003/api/reviews/', {
+	//   date: getCurrentDate(currentDayIndex)
+		username: username,
+		restaurantName: selectedPlaceHome.restaurantName,
+		rating: num_rating,
+		description: reviewText
+	})
+	.then(response => {
+		console.log('Review submitted successfully');
+		setRating(null);
+		setReviewText('');
+		setSelectedPlaceHome(null);
+	})
+	.catch(error => {
+		console.log(error);
+	});
+};
+
+	const select = (index) =>{
+		const copyClickState = [...clicked];
+		copyClickState[index] = !clicked[index];
+		setClicked(copyClickState);
+	}
 
 
-
-
-  return (
-    <>
-      <NavBar />
-      <div className='home'>
-        <div className='maps'>
-          <Maps showReviewContainer={showReviewContainer} showUserReviews={showUserReviews} />
+	return (
+    	<>
+      	<NavBar />
+      	<div className='home'>
+        	<div className='maps'>
+          	<Maps showReviewContainer={showReviewContainer} showUserReviews={showUserReviews} close={close}/>
          
           
-          {!reviewContainer && showReview && (<div  className="user-reviews-container">
-                
-            <IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => showUserReviewsContainer()}/>
-            {userReviews.map((review, index) => (
-                  <div key={index} className='user-reviews-container-details'>
-                      <img src={foodImg} alt="temp image" height="50%" width="100%" />
-                      <div className="fields">
-                          <h3>Username: {review.username}</h3>
-                          <h3>Rating: {review.rating}</h3>
-                          <h3>Review: {review.description}</h3>
-                      </div>
-                  </div>
-              ))}
-                   
-        </div>)}
+        	{!reviewContainer && showReview && (<div  className="user-reviews-container">
+           		<IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => showUserReviewsContainer()}/>
+            	{userReviews.map((review, index) => (
+                	<div key={index} className={`user-reviews-container-details ${clicked[index] ? 'clicked' : ''}`} onClick={() => select(index)}>
+                    	<img src={foodImg} alt="temp image" height="50%" width="100%" />
+                    	<div className="fields">
+                        	<h3>Username: {review.username}</h3>
+                        	<h3>Rating: {review.rating}</h3>
+                        	<h3>Review: {review.description}</h3>
+                    	</div>
+                	</div>
+             	 ))}   
+        	</div>)}
 
         	<div className={`review-form ${reviewContainer ? '' : 'hidden'}`}>
 
@@ -204,14 +214,12 @@ useEffect(() => {
 				</div>
 
           	</div>
+    		</div>
+    	</div>
+    	</>
 
-        </div>
-      </div>
-    </>
 
-
-  )
-
+  	)
 
 
 }
