@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import foodImg from '../images/food.png';
@@ -6,6 +7,7 @@ const mapContainerStyle = {
   marginTop: '5rem',
   width: '50vw',
   height: '80vh',
+  marginLeft: '5rem',
 };
 
 const center = {
@@ -29,7 +31,7 @@ const fakePlace1 = {
 // };
 
 
-const Maps = ({showReviewContainer}) => {
+const Maps = ({showReviewContainer, showUserReviews}) => {
 
   const [restaurants, setRestaurants] = useState([]);
 
@@ -48,8 +50,7 @@ const Maps = ({showReviewContainer}) => {
 
   console.log("restaurant", restaurants);
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_API_KEY,
-    version: 'weekly',
+    googleMapsApiKey:  process.env.REACT_APP_API_KEY,
 
   });
 
@@ -92,6 +93,11 @@ const Maps = ({showReviewContainer}) => {
     showReviewContainer(selectedPlace);
   };
 
+  const handleShowUserReviews = () => {
+    showUserReviews(selectedPlace);
+  };
+
+
   if (!isLoaded) {
     return <div>Loading maps</div>;
   }
@@ -117,8 +123,9 @@ const Maps = ({showReviewContainer}) => {
             <div className='infoWindow'>
               <h2>{selectedPlace.restaurantName}</h2>
               <img src={foodImg} alt="temp image" height="60vh" width="100%" />
-              <p>{selectedPlace.restaurantType}</p> 
+              <h3>Cuisine Type: {selectedPlace.restaurantType}</h3> 
               <button onClick={handleShowReviewContainer}>Write Review</button>
+              <button onClick={() => handleShowUserReviews()} style={{marginLeft: "10px"}}>View Reviews</button>
             </div>
           </InfoWindow>
         )}
@@ -137,7 +144,8 @@ export default Maps;
 
 //     useEffect(() => {
 //         const loader = new Loader({
-//             apiKey: process.env.REACT_APP_API_KEY,
+//             apiKey: `${process.env.REACT_APP_API_KEY}`,
+//             version: 'weekly',
 //         });
 
 //         loader.load().then(() => {

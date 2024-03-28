@@ -96,6 +96,23 @@ const updateReviewDesc = async (req, res) => {
     });
 };
 
+const getUserReviewsByRestaurantName = async (req, res) => {
+  const { restaurantName } = req.params;
+
+  try {
+    const reviews = await Reviews.find({ restaurantName });
+
+    if (!reviews) {
+      return res.status(404).json({ error: 'No such user reviews' });
+    }
+
+    res.status(200).json(reviews);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 module.exports = {
     createReview,
     getReview,
@@ -104,4 +121,5 @@ module.exports = {
     updateUsernameReview,
     updateReviewRating,
     updateReviewDesc,
+    getUserReviewsByRestaurantName,
 };

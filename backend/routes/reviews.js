@@ -6,14 +6,16 @@ const {
   deleteReview,
   updateUsernameReview,
   updateReviewRating,
-  updateReviewDesc
+  updateReviewDesc,
+  getUserReviewsByRestaurantName
 }=require('../contollers/reviewController')
 const router = express.Router()
 
 
 router.get('/',getReview)
-router.post('/',createReview)
+router.get('/get-reviews-restaurantName/:restaurantName',getUserReviewsByRestaurantName)
 router.get('/:username',getUserReviews)
+router.post('/',createReview)
 router.delete('/:reviewId',deleteReview)
 router.put('/:username/:usernameCopy', updateUsernameReview)  
 router.put('/update-review-rating/:username/:restaurantName/:rating', updateReviewRating)  
