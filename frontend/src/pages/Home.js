@@ -7,6 +7,8 @@ import { FaSearch, FaStar } from "react-icons/fa"
 import { IoMdArrowRoundForward } from "react-icons/io";
 import "../css/Home.css"
 import foodImg from '../images/food.png';
+import { useJsApiLoader } from '@react-google-maps/api';
+
 
 
 // import dataTSV from '../images/Restaurant_Reviews.tsv'
@@ -33,12 +35,12 @@ function Home() {
 	const [showReview, setShowReview] = useState(false);
 	const [userReviews, setUserReviews] = useState([]);
 
-	const [clicked, setClicked] = useState([]);
+	const { isLoaded } = useJsApiLoader({
+		googleMapsApiKey:  "AIzaSyDcRPN5eLcVpXHsauhwTipsYoyvaWqheNI"
+	
+	  });
+	// const [clicked, setClicked] = useState(Array(100).fill(false));
   
-  	useEffect(() => {
-		setClicked(Array(userReviews.length).fill(false));	
-	}, [userReviews]);
-
 
   // console.log(authenticated);
 
@@ -72,23 +74,16 @@ function Home() {
   const showReviewContainer = (place) => {
     setReviewContainer(true);
     setSelectedPlaceHome(place);
-    // console.log("Selected Place:", selectedPlaceHome.);
 
   };
 
   const closeReviewContainer = () => {
     setReviewContainer(false);
 };
-const close = () => {
-	setShowReview(close);
-}
-// useEffect(() => {
-//   console.log("user reviews:");
-//     userReviews.forEach(review => {
-//         console.log("Rating:", review.rating);
-//     });
+// const close = () => {
+// 	setShowReview(close);
+// }
 
-// }, [userReviews]);
 
   const showUserReviews = async (place) => {
     // console.log(place.restaurantName);
@@ -139,25 +134,18 @@ const close = () => {
 	});
 };
 
-	const select = (index) =>{
-		const copyClickState = [...clicked];
-		copyClickState[index] = !clicked[index];
-		setClicked(copyClickState);
-	}
-
-
 	return (
     	<>
       	<NavBar />
       	<div className='home'>
         	<div className='maps'>
-          	<Maps showReviewContainer={showReviewContainer} showUserReviews={showUserReviews} close={close}/>
+          	<Maps showReviewContainer={showReviewContainer} showUserReviews={showUserReviews} isLoaded={isLoaded}/>
          
           
         	{!reviewContainer && showReview && (<div  className="user-reviews-container">
            		<IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => showUserReviewsContainer()}/>
             	{userReviews.map((review, index) => (
-                	<div key={index} className={`user-reviews-container-details ${clicked[index] ? 'clicked' : ''}`} onClick={() => select(index)}>
+                	<div key={index} className="user-reviews-container-details">
                     	<img src={foodImg} alt="temp image" height="50%" width="100%" />
                     	<div className="fields">
                         	<h3>Username: {review.username}</h3>
@@ -210,7 +198,7 @@ const close = () => {
 				</div>
 
 				<div className="review-form-back">
-				<button className="close" onClick={closeReviewContainer}>&#215;</button>
+				<button className="close" onClick={() => closeReviewContainer()}>&#215;</button>
 				</div>
 
           	</div>

@@ -59,6 +59,9 @@ function Profile(){
     const [inputDescValues, setInputDescValues] = useState([]);
     const [revertDesc, setRevertDesc] = useState('');
 
+    const [checkRating, setCheckRating] = useState([]);
+
+
 
     useEffect(() => {
         setReadOnlyStateRating(Array(userReviews.length).fill(true));
@@ -69,7 +72,7 @@ function Profile(){
         inputRefsDesc.current = Array(userReviews.length).fill(null);
         setInputDescValues(userReviews.map(review => review.description));
 
-
+        setCheckRating(Array(userReviews.length).fill(null));
     }, [userReviews]);
 
     useEffect(() => {
@@ -120,6 +123,8 @@ function Profile(){
                         onClick={() => handleEditRatingConfirm(index)}/>
                     )}
                 </h3>
+                {checkRating[index] === "notNum" && ( <p style={{color: "red"}}>Rating must be a number</p>)}    
+                {checkRating[index] === "notInThresh" && (<p style={{color: "red"}}>Rating must be between 1 and 5</p>)}                
                 <h3>
                     Review: 
                     <input type="text" value={inputDescValues[index]}  
@@ -187,9 +192,38 @@ function Profile(){
 
     //when user clicks rating check mark
     const handleEditRatingConfirm = (index) => {
+        const copyChecks = [...checkRating];
+
+        const ratingCheck = inputRatingValues[index];
+
+        let isNumber;
+        if (!isNaN(parseFloat(ratingCheck))) {
+            isNumber = true;
+        } else {
+            isNumber = false;
+        }
+        console.log(isNumber);
+        if(!isNumber){
+            console.log("rating must be a number");
+            copyChecks[index] = "notNum";
+            setCheckRating(copyChecks);
+            return;
+        }
+        if(isNumber){
+            if(parseFloat(ratingCheck) > 5 || parseFloat(ratingCheck) < 1){
+                console.log("rating must be between 1 and5");
+                copyChecks[index] = "notInThresh";
+                setCheckRating(copyChecks);
+                return;
+            }
+        }
+
         const copyRatingConfirm = [...editRatingConfirm]; 
         const newEditStates = [...readOnlyStateRating];
         const copyReviewRating = [...editReviewRating]; 
+
+        copyChecks[index] = null;
+        setCheckRating(copyChecks);
 
         //set readonly to true
         newEditStates[index] = true;

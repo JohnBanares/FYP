@@ -31,7 +31,7 @@ const fakePlace1 = {
 // };
 
 
-const Maps = ({showReviewContainer, showUserReviews, close}) => {
+const Maps = ({showReviewContainer, showUserReviews, isLoaded}) => {
 
   const [restaurants, setRestaurants] = useState([]);
 
@@ -49,10 +49,10 @@ const Maps = ({showReviewContainer, showUserReviews, close}) => {
   }, []);
 
   console.log("restaurant", restaurants);
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey:  process.env.REACT_APP_API_KEY,
+  // const { isLoaded } = useJsApiLoader({
+  //   googleMapsApiKey:  "AIzaSyDcRPN5eLcVpXHsauhwTipsYoyvaWqheNI"
 
-  });
+  // });
 
   const randomCoordinates = [
     { lat: 53.38913104764263, lng: -6.37152654460699 }, 
@@ -88,7 +88,6 @@ const Maps = ({showReviewContainer, showUserReviews, close}) => {
 
   const handleInfoWindowClose = () => {
     setSelectedPlace(null);
-    close(false);
   };
 
   const handleShowReviewContainer = () => {
@@ -106,32 +105,35 @@ const Maps = ({showReviewContainer, showUserReviews, close}) => {
 
   return (
     <div>
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        zoom={10}
-        center={center}
-      >
-        {/* <Marker position={center} onClick={() => handleMarkerClick(fakePlace1,center)} /> */}
-        {/* <Marker position={p2} onClick={() => handleMarkerClick(fakePlace2, p2)} />
-        <Marker position={p3} onClick={() => handleMarkerClick(fakePlace3, p3)} /> */}
-
-        {generateMarker(randomCoordinates)}
-
-        {selectedPlace && (
-          <InfoWindow
-            position={selectedPosition}
-            onCloseClick={handleInfoWindowClose}
-          >
-            <div className='infoWindow'>
-              <h2>{selectedPlace.restaurantName}</h2>
-              <img src={foodImg} alt="temp image" height="60vh" width="100%" />
-              <h3>Cuisine Type: {selectedPlace.restaurantType}</h3> 
-              <button onClick={handleShowReviewContainer}>Write Review</button>
-              <button onClick={() => handleShowUserReviews()} style={{marginLeft: "10px"}}>View Reviews</button>
-            </div>
-          </InfoWindow>
-        )}
-      </GoogleMap>
+    {isLoaded && (
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          zoom={10}
+          center={center}
+        >
+          {randomCoordinates.map((cords, index) => (
+            <Marker
+              key={index}
+              position={cords}
+              onClick={() => handleMarkerClick(restaurants[index], cords)}
+            />
+          ))}
+          {selectedPlace && (
+            <InfoWindow
+              position={selectedPosition}
+              onCloseClick={handleInfoWindowClose}
+            >
+              <div className='infoWindow'>
+                <h2>{selectedPlace.restaurantName}</h2>
+                <img src={foodImg} alt="temp image" height="60vh" width="100%" />
+                <h3>Cuisine Type: {selectedPlace.restaurantType}</h3> 
+                <button onClick={handleShowReviewContainer}>Write Review</button>
+                <button onClick={() => handleShowUserReviews()} style={{marginLeft: "10px"}}>View Reviews</button>
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+      )}
     </div>
   );
 };
