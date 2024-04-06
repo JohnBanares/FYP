@@ -196,9 +196,26 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     setSearchContainer(true);
   }
 
+  //close search
   const resetSearxh = () => {
     setPlacesMarkers(null);
+    setDirectionsResponse(null);
     typeRef.current.value = '';
+  }
+
+  const findSpecificRoute = async(dest) =>{
+    //eslint-disable-next-line no-undef
+    const directionsService = new google.maps.DirectionsService();
+    const results = await directionsService.route({
+      origin: center,
+      destination: dest,
+      // eslint-disable-next-line no-undef
+      travelMode: google.maps.TravelMode.DRIVING,
+    })
+    setDirectionsResponse(results)
+    // console.log("orignn",center);
+    // console.log("dest",dest);
+
   }
 
   if (!isLoaded) {
@@ -228,6 +245,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
                 <img src={foodImg} alt="temp image" height="60vh" width="100%" />
                 <h3>Cuisine Type: {typeRef.current.value}</h3> 
                 <button onClick={handleShowReviewContainerType}>Write Review</button>
+                <button onClick={()=>findSpecificRoute(selectedPositionType)}>Get Directions</button>
               </div>
             </InfoWindow>
           )}
@@ -245,6 +263,8 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
                 <h3>Cuisine Type: {selectedPlace.restaurantType}</h3> 
                 <button onClick={handleShowReviewContainer}>Write Review</button>
                 <button onClick={() => handleShowUserReviews()} style={{marginLeft: "10px"}}>View Reviews</button>
+                <button onClick={() => findSpecificRoute(selectedPosition)} style={{marginLeft: "10px"}}>Get Directions</button>
+
               </div>
             </InfoWindow>
           )}
