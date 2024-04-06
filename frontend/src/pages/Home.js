@@ -34,8 +34,8 @@ function Home( apiKey) {
 	const [userReviews, setUserReviews] = useState([]);
 
 	
-	// const [clicked, setClicked] = useState(Array(100).fill(false));
-  
+	const [selectedPlaceHomeType, setSelectedPlaceHomeType] = useState(null);
+
 
   // console.log(authenticated);
 
@@ -78,18 +78,22 @@ function Home( apiKey) {
     }
   }, [navigate]);
 
-  const showReviewContainer = (place) => {
-    setReviewContainer(true);
-    setSelectedPlaceHome(place);
+	const showReviewContainer = (place) => {
+		setReviewContainer(true);
+		setSelectedPlaceHome(place);
+	};
 
-  };
+	const closeReviewContainer = () => {
+		setReviewContainer(false);
+		setSelectedPlaceHome(null);
+		setSelectedPlaceHome(null);
+	};
 
-  const closeReviewContainer = () => {
-    setReviewContainer(false);
-};
-// const close = () => {
-// 	setShowReview(close);
-// }
+	const showReviewContainerType = (place) => {
+    	setReviewContainer(true);
+    	setSelectedPlaceHomeType(place);
+
+	};
 
 
   const showUserReviews = async (place) => {
@@ -123,22 +127,46 @@ function Home( apiKey) {
     const num_rating = parseFloat(rating);
 
     //console.log("Hey" + username )
-	axios.post('http://localhost:3003/api/reviews/', {
-	//   date: getCurrentDate(currentDayIndex)
+
+	if(selectedPlaceHome == null){
+		axios.post('http://localhost:3003/api/reviews/', {
+		username: username,
+		restaurantName: selectedPlaceHomeType.name,
+		rating: num_rating,
+		description: reviewText
+		})
+		.then(response => {
+			console.log('Review submitted successfully');
+			setRating(null);
+			setReviewText('');
+			setSelectedPlaceHome(null);
+			setSelectedPlaceHomeType(null);
+			return;
+		})
+		.catch(error => {
+			console.log(error);
+		});
+	}
+
+	if(selectedPlaceHomeType == null){
+		axios.post('http://localhost:3003/api/reviews/', {
 		username: username,
 		restaurantName: selectedPlaceHome.restaurantName,
 		rating: num_rating,
 		description: reviewText
-	})
-	.then(response => {
-		console.log('Review submitted successfully');
-		setRating(null);
-		setReviewText('');
-		setSelectedPlaceHome(null);
-	})
-	.catch(error => {
-		console.log(error);
-	});
+		})
+		.then(response => {
+			console.log('Review submitted successfully');
+			setRating(null);
+			setReviewText('');
+			setSelectedPlaceHome(null);
+			setSelectedPlaceHomeType(null);
+			return;
+		})
+		.catch(error => {
+			console.log(error);
+		});
+	}
 };
 
 	return (
@@ -146,7 +174,7 @@ function Home( apiKey) {
       	<NavBar />
       	<div className='home'>
         	<div className='maps'>
-          	<Maps showReviewContainer={showReviewContainer} showUserReviews={showUserReviews} isLoaded={isLoaded}/>
+          	<Maps showReviewContainer={showReviewContainer} showReviewContainerType={showReviewContainerType} showUserReviews={showUserReviews} isLoaded={isLoaded}/>
          
           
         	{!reviewContainer && showReview && (<div  className="user-reviews-container">
@@ -172,6 +200,11 @@ function Home( apiKey) {
 					{selectedPlaceHome && (
 					<p>{selectedPlaceHome.restaurantName}</p>
 					)}
+					
+					{selectedPlaceHomeType && (
+					<p>{selectedPlaceHomeType.name}</p>
+					)}
+
 
 					<p>Rating:</p>
 					<div style={{ display: 'flex', color: " yellow", marginTop: '2rem' }}>

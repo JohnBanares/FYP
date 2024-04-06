@@ -24,7 +24,7 @@ const fakePlace1 = {
 };
 
 
-const Maps = ({showReviewContainer, showUserReviews, isLoaded}) => {
+const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isLoaded}) => {
 
   const [restaurants, setRestaurants] = useState([]);
   const [markers, setMarkers] = useState([]);
@@ -106,6 +106,10 @@ const Maps = ({showReviewContainer, showUserReviews, isLoaded}) => {
 
   const handleShowReviewContainer = () => {
     showReviewContainer(selectedPlace);
+  };
+
+  const handleShowReviewContainerType = () => {
+    showReviewContainerType(selectedPlaceType);
   };
 
   const handleShowUserReviews = () => {
@@ -223,7 +227,7 @@ const Maps = ({showReviewContainer, showUserReviews, isLoaded}) => {
                 <h2>{selectedPlaceType.name}</h2>
                 <img src={foodImg} alt="temp image" height="60vh" width="100%" />
                 <h3>Cuisine Type: {typeRef.current.value}</h3> 
-                <button onClick={handleShowReviewContainer}>Write Review</button>
+                <button onClick={handleShowReviewContainerType}>Write Review</button>
               </div>
             </InfoWindow>
           )}
