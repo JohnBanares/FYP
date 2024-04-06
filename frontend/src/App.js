@@ -1,4 +1,7 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
 
 import Home from './pages/Home'
 import Review from './pages/Review'
@@ -7,6 +10,7 @@ import SignUp from './pages/Signup'
 import Profile from './pages/Profile'
 
 function App() {
+  console.log(process.env.REACT_APP_TEMP);
   return (
     <div className="App">
       

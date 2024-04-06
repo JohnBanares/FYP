@@ -5,10 +5,12 @@ const path = require('path')
 const reviewsRoutes = require('./routes/reviews')
 const restaurantsRoutes = require('./routes/restaurant')
 const usersRoutes = require('./routes/user')
-
+require('dotenv').config();
 
 
 const app = express()
+const apiKey = process.env.REACT_APP_API_KEY;
+
 
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')));
@@ -21,6 +23,9 @@ app.use((req, res, next) => {
     next()
   })
 
+app.get('/api/maps/apikey', (req, res) => {
+    res.json({ apiKey });
+});
 //routes
 app.use('/api/reviews', reviewsRoutes)
 app.use('/api/restaurant', restaurantsRoutes)

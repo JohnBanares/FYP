@@ -8,15 +8,13 @@ import { IoMdArrowRoundForward } from "react-icons/io";
 import "../css/Home.css"
 import foodImg from '../images/food.png';
 import { useJsApiLoader } from '@react-google-maps/api';
-
-
-
 // import dataTSV from '../images/Restaurant_Reviews.tsv'
-
 import NavBar from "./NavBar"
 import Maps from "./Maps"
 
-function Home() {
+
+
+function Home( apiKey) {
 
 	const [reviews, setReviews] = useState('');
 	// const [tsvData, setTsvData] = useState([]);
@@ -35,14 +33,23 @@ function Home() {
 	const [showReview, setShowReview] = useState(false);
 	const [userReviews, setUserReviews] = useState([]);
 
-	const { isLoaded } = useJsApiLoader({
-		googleMapsApiKey:  "AIzaSyDcRPN5eLcVpXHsauhwTipsYoyvaWqheNI"
 	
-	  });
 	// const [clicked, setClicked] = useState(Array(100).fill(false));
   
 
   // console.log(authenticated);
+
+
+
+	const { isLoaded } = useJsApiLoader({
+		googleMapsApiKey: process.env.REACT_APP_API_KEY,
+		libraries: ['places',]
+	});
+  
+    // console.log(process.env.REACT_APP_TEMP);
+
+ 
+
 
   useEffect(() => {
     // Fetch restaurant data from MongoDB
@@ -207,7 +214,7 @@ function Home() {
     	</>
 
 
-  	)
+  	) 
 
 
 }
