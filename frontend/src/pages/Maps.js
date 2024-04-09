@@ -24,7 +24,7 @@ const fakePlace1 = {
 };
 
 
-const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isLoaded}) => {
+const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isLoaded, showAPIReviews}) => {
 
   const [restaurants, setRestaurants] = useState([]);
   const [markers, setMarkers] = useState([]);
@@ -43,26 +43,13 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
   const [selectedPlaceType, setSelectedPlaceType] = useState(null);
   const [selectedPositionType, setselectedPositionType] = useState(null);
 
+  const [apiReviews, setAPIReviews] = useState([]);
+
+
   const handleMarkerClickType = (place, position) => {
     setSelectedPlaceType(place);
     setselectedPositionType(position);
   };
-
-
-
-  useEffect(() => {
-    fetch('/api/restaurant')
-      .then(response => response.json())  
-      .then(data => {
-        setRestaurants(data);
-        
-      })
-      .catch(error => {
-        console.error('Error fetching restaurant data:', error);
-      });
-  }, []);
-
-  console.log("restaurant", restaurants);
 
   const randomCoordinates = [
     { lat: 53.38913104764263, lng: -6.37152654460699 }, 
@@ -104,14 +91,18 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     setSelectedPlace(null);
   };
 
+
+  //pass db restaurant data for writing reviews
   const handleShowReviewContainer = () => {
     showReviewContainer(selectedPlace);
   };
 
+  //pass api restaurnt name for writing reviews
   const handleShowReviewContainerType = () => {
     showReviewContainerType(selectedPlaceType);
   };
 
+  //pass prop to parent component
   const handleShowUserReviews = () => {
     showUserReviews(selectedPlace);
   };
@@ -120,6 +111,8 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     setMarkers(null);
   }
 
+
+  //---------------------------------------Calculate route ------------------------------------------------------
   const calculateRoute = async() => {
     if (fromRef.current.value === '' || toRef.current.value === '') {
       return;
@@ -140,14 +133,16 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     fromRef.current.value = '';
     toRef.current.value = '';
   }
-  
+
+  //---------------------------------------Find nearby places ------------------------------------------------------
   const fetchNearbyPlaces = () => {
+    // dublin spire cords used for demoing restaurants nearby
     // eslint-disable-next-line no-undef
-    const pyrmont = new google.maps.LatLng(53.349805, -6.26031); 
+    const cord = new google.maps.LatLng(53.349805, -6.26031); 
 
     const request = {
-      location: pyrmont,
-      radius: '1000',
+      location: cord,
+      radius: '2000',
       type: ['restaurant'],
       keyword:  typeRef.current.value, 
     };
@@ -157,20 +152,37 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     service.nearbySearch(request, callback);
   };
 
+  
+  const findSpecificRoute = async(dest) =>{
+    //eslint-disable-next-line no-undef
+    const directionsService = new google.maps.DirectionsService();
+    const results = await directionsService.route({
+      origin: center,
+      destination: dest,
+      // eslint-disable-next-line no-undef
+      travelMode: google.maps.TravelMode.DRIVING,
+    })
+    setDirectionsResponse(results)
+    // console.log("orignn",center);
+    // console.log("dest",dest);
+
+  }
+
+
   const callback = (results, status) => {
     // eslint-disable-next-line no-undef
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       console.log('Results:', results);
-      const latitude = results[0].geometry.location.lat();
-      const longitude = results[0].geometry.location.lng();
+      // const latitude = results[0].geometry.location.lat();
+      // const longitude = results[0].geometry.location.lng();
       
-      console.log('Latitude:', latitude);
-      console.log('Longitude:', longitude);
+      // console.log('Latitude:', latitude);
+      // console.log('Longitude:', longitude);
 
       //map specifc places markers
       const newMarkers = results.map((place, index) => {
         const { lat, lng } = place.geometry.location;
-        console.log("Place Name:", place.name);
+
         return (
           <Marker
             key={index}
@@ -185,6 +197,31 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
       console.error('Places API request failed with status:', status);
     }
   };
+  //--------------------------------------------View API Reviews--------------------------------------------------------------------
+  
+  const getShowAPIReviews = (place_id) => {
+    // console.log(place_id);
+    var request = {
+      placeId: place_id,
+      fields: ['reviews']
+    };
+  
+    // eslint-disable-next-line no-undef
+    const service = new google.maps.places.PlacesService(map);
+    service.getDetails(request, callback2);
+  
+  }
+
+    const callback2 = (place, status) => {
+          // eslint-disable-next-line no-undef
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log('Reviews:', place.reviews);
+        showAPIReviews(place.reviews);
+      } else {
+        console.error('Failed to fetch reviews for place:', status);
+      }
+    }
+  
 
   const showDirectionsContainer = () => {
     setDirectionsContainer(true);
@@ -201,21 +238,6 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     setPlacesMarkers(null);
     setDirectionsResponse(null);
     typeRef.current.value = '';
-  }
-
-  const findSpecificRoute = async(dest) =>{
-    //eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
-    const results = await directionsService.route({
-      origin: center,
-      destination: dest,
-      // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.DRIVING,
-    })
-    setDirectionsResponse(results)
-    // console.log("orignn",center);
-    // console.log("dest",dest);
-
   }
 
   if (!isLoaded) {
@@ -235,6 +257,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
           {markers}
           {placesMarkers}
 
+          {/* Info window for API plaeces */}
           {selectedPlaceType && (
             <InfoWindow
               position={selectedPositionType}
@@ -245,13 +268,14 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
                 <img src={foodImg} alt="temp image" height="60vh" width="100%" />
                 <h3>Cuisine Type: {typeRef.current.value}</h3> 
                 <button onClick={handleShowReviewContainerType}>Write Review</button>
-                <button onClick={()=>findSpecificRoute(selectedPositionType)}>Get Directions</button>
+                <button onClick={() => getShowAPIReviews(selectedPlaceType.place_id)} style={{marginLeft: "10px"}}>View Reviews</button>
+                <button onClick={()=>findSpecificRoute(selectedPositionType)} style={{marginLeft: "10px"}}>Get Directions</button>
               </div>
             </InfoWindow>
           )}
           
 
-          {/* For recommendation */}
+          {/* For recommendation hardcoded */}
           {selectedPlace && (
             <InfoWindow
               position={selectedPosition}

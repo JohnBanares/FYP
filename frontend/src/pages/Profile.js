@@ -15,9 +15,18 @@ import { backend } from "@tensorflow/tfjs";
 
 function Profile(){
     const [userReviews, setUserReviews] = useState([]);
+
+    //state to toggle editing profile info
     const [showChangeContainer, setChangeContainer] = useState(false);
+
+    //show delete and edit nuttons
     const [showSubButtons, setSubButtons] = useState([]);
+    //show yes or no buttons when cancel
     const [showDecisionContainer, setDecisionContainer] = useState([]);
+    //display cancel and save buttons
+    const [showEditDecision, setEditDecision] = useState([]);
+    
+
     const [usernameCopy, setUsernameCopy] = useState(localStorage.getItem('username'));
     const [emailCopy, setEmailCopy] = useState(localStorage.getItem('email'));
 
@@ -41,7 +50,8 @@ function Profile(){
     const username = localStorage.getItem('username');
     const email = localStorage.getItem('email');
 
-    const [showEditDecision, setEditDecision] = useState([]);
+    
+
     const [currentlyEditingIndex, setCurrentlyEditingIndex] = useState(null);
 
     const [editReviewRating, setEditReviewRating] = useState([]);

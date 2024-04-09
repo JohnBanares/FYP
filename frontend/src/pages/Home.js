@@ -36,34 +36,27 @@ function Home( apiKey) {
 	
 	const [selectedPlaceHomeType, setSelectedPlaceHomeType] = useState(null);
 
-
-  // console.log(authenticated);
-
-
+	//store restuarnat reviews from maps 
+	const [apiReviews, setAPIReviews] = useState([]);
 
 	const { isLoaded } = useJsApiLoader({
 		googleMapsApiKey: process.env.REACT_APP_API_KEY,
 		libraries: ['places',]
 	});
   
-    // console.log(process.env.REACT_APP_TEMP);
+//   useEffect(() => {
+//     // Fetch restaurant data from MongoDB
+//     fetch('/api/reviews')
+//       .then(response => response.json())
+//       .then(data => {
+//         const reviewsArray = Object.values(data).flat();
+//         setReviews(reviewsArray);
 
- 
-
-
-  useEffect(() => {
-    // Fetch restaurant data from MongoDB
-    fetch('/api/reviews')
-      .then(response => response.json())
-      .then(data => {
-        const reviewsArray = Object.values(data).flat();
-        setReviews(reviewsArray);
-
-      })
-      .catch(error => {
-        console.error('Error fetching restaurant data:', error);
-      });
-  }, []);
+//       })
+//       .catch(error => {
+//         console.error('Error fetching restaurant data:', error);
+//       });
+//   }, []);
   // console.log('reviews', reviews);
 
 
@@ -78,6 +71,7 @@ function Home( apiKey) {
     }
   }, [navigate]);
 
+  	//write review container from db restaurants
 	const showReviewContainer = (place) => {
 		setReviewContainer(true);
 		setSelectedPlaceHome(place);
@@ -89,9 +83,17 @@ function Home( apiKey) {
 		setSelectedPlaceHome(null);
 	};
 
+
+	//wrtie review from api restaurants
 	const showReviewContainerType = (place) => {
     	setReviewContainer(true);
     	setSelectedPlaceHomeType(place);
+
+	};
+
+	const showAPIReviews = (reviews) => {
+		setShowReview(true);
+    	setAPIReviews(reviews);
 
 	};
 
@@ -174,12 +176,26 @@ function Home( apiKey) {
       	<NavBar />
       	<div className='home'>
         	<div className='maps'>
-          	<Maps showReviewContainer={showReviewContainer} showReviewContainerType={showReviewContainerType} showUserReviews={showUserReviews} isLoaded={isLoaded}/>
+          	<Maps showReviewContainer={showReviewContainer} showReviewContainerType={showReviewContainerType} showUserReviews={showUserReviews} isLoaded={isLoaded} showAPIReviews={showAPIReviews}/>
          
           
         	{!reviewContainer && showReview && (<div  className="user-reviews-container">
            		<IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => showUserReviewsContainer()}/>
-            	{userReviews.map((review, index) => (
+            	{apiReviews.map((review, index) => (
+                	<div key={index} className="user-reviews-container-details">
+                    	<img src={foodImg} alt="temp image" height="50%" width="100%" />
+                    	<div className="fields">
+                        	<h3>Username: {review.author_name}</h3>
+                        	<h3>Rating: {review.rating}</h3>
+                        	<h3>Review: {review.text}</h3>
+                    	</div>
+                	</div>
+             	 ))}   
+        	</div>)}
+
+			{/* {!reviewContainer && showReview && (<div  className="user-reviews-container">
+           		<IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => showUserReviewsContainer()}/>
+            	{apiReviews.map((review, index) => (
                 	<div key={index} className="user-reviews-container-details">
                     	<img src={foodImg} alt="temp image" height="50%" width="100%" />
                     	<div className="fields">
@@ -189,7 +205,7 @@ function Home( apiKey) {
                     	</div>
                 	</div>
              	 ))}   
-        	</div>)}
+        	</div>)} */}
 
         	<div className={`review-form ${reviewContainer ? '' : 'hidden'}`}>
 
