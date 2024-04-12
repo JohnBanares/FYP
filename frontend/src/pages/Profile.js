@@ -72,6 +72,7 @@ function Profile(){
     const [checkRating, setCheckRating] = useState([]);
 
 
+    const[image, setImage] = useState('yes');
 
     useEffect(() => {
         setReadOnlyStateRating(Array(userReviews.length).fill(true));
@@ -546,7 +547,7 @@ function Profile(){
                 if(newPass === confirmPass){
                     console.log("match");
                     try{
-                        const res = await axios.put(`http://localhost:3003/api/users/${username}/${newPass}`);
+                        const res = await axios.put(`http://localhost:3003/api/users/${username}/update-pass/${newPass}`);
                         setAuthMatchPass(false);
                         setChangeContainer(false);
                         setOkMessage(true);
@@ -718,7 +719,38 @@ function Profile(){
          }
        }
     }
+    // -------------------------------------------------------------------------------------------
+    // convert image to base64
+    // const convertImage = (e) => {
+    //     console.log(e);
+    //     const reader = new FileReader();
+    //     reader.readAsDataURL(e.target.files[0]);
+    //     reader.onload = () => {
+    //         console.log(reader.result);
+    //         setImage(reader.result);
+    //     };
+    //     reader.onerror = error => {
+    //         console.log("erorr", error);
+    //     }
+    // }
 
+    // const uploadImage = async() => {
+    //     // console.log(`http://localhost:3003/api/users/${username}/update-image/${image}`);
+    //     try{
+    //         const response = await axios.put(`http://localhost:3003/api/images/`,{
+    //         username: username,
+    //         image: image
+    //     });
+    //         if(response.status === 200){
+    //             console.log("Update success");
+    //         }else{
+    //             console.log("Update failed reviews name with status:", response.status);   
+    //         }
+    //     }catch(error){
+    //         console.log("error");
+    //     }
+
+    // }
   
 //   console.log(userReviews);
     
@@ -743,8 +775,21 @@ function Profile(){
                 <div className="profile-info-container-sub">
                     <div className="profile-info-container-top">
                         <h2> My Profile</h2>
-                        <img src={profileImg} alt="temp profile image"/>
+                       
+                        <img src={profileImg} alt="temp profile image" style={{margin: "0"}}/>
+                        {/* {image=="" || image== null?"": <img width={50} height={50} src={image}/>}
+                        <input
+                        type="file"
+                        accept="image/*"
+                        className="ci-edit-profile"
+                        onChange={convertImage}
+                        /> */}
+
                     </div>
+                    {/* <button 
+                            style={{maxHeight:"40px",marginLeft: "18%", padding: "5px", fontSize: "1rem", fontWeight: "bold", backgroundColor: "grey", color: "white", border: "none", borderRadius: "20px"}}
+                            onClick={()=>uploadImage()}
+                        >Update Profile Image:</button> */}
 
                     {!showChangeContainer && !okMessage && (
                         <div className="profile-info-container-bottom">

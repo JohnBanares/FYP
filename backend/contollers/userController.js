@@ -93,6 +93,19 @@ const updateEmail = async (req, res) => {
     });
 };
 
+// const updateImage = async(req,res) => {
+//   const {username, image} = req.params;
+
+//   Users.findOneAndUpdate({ username}, { image: image })
+//   .then(result => {
+//     console.log(result);
+//     res.status(200).json({ message: "photo updated successfully" });
+//   })
+//   .catch(error => {
+//     console.error(error);
+//     res.status(500).json({ error: "Internal server error" });
+//   });
+// }
 module.exports = {
   getUsers,  
   getUser,

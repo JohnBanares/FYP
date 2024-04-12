@@ -5,6 +5,8 @@ const path = require('path')
 const reviewsRoutes = require('./routes/reviews')
 const restaurantsRoutes = require('./routes/restaurant')
 const usersRoutes = require('./routes/user')
+const imagesRoutes = require('./routes/image')
+
 require('dotenv').config();
 
 
@@ -30,6 +32,7 @@ app.get('/api/maps/apikey', (req, res) => {
 app.use('/api/reviews', reviewsRoutes)
 app.use('/api/restaurant', restaurantsRoutes)
 app.use('/api/users', usersRoutes)
+app.use('/api/images', imagesRoutes)
 
 
 

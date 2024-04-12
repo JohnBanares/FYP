@@ -45,6 +45,16 @@ function Home( apiKey) {
 		libraries,
 	});
 	
+	useEffect(() => {
+		const loggedInUser = localStorage.getItem('authenticated');
+		// console.log(loggedInUser);
+		if (loggedInUser === 'true') {
+		  setAuthenticated(true);
+		} else {
+		  setAuthenticated(false);
+		  navigate('../'); 
+		}
+	  }, [navigate]);
 	//------------------------------------------------------------------------------------------------------------------------------------------------------
 	// useEffect(() => {
 	// 	  d3.tsv("/Restaurant_Reviews.tsv").then(data => {

@@ -205,3 +205,11 @@
 
 }
 
+.ci-edit-profile {
+    position: absolute; 
+    left: 63%;
+    top: 53%;
+    font-size: 1rem;
+    cursor: pointer;
+    
+}

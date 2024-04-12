@@ -24,6 +24,7 @@ function SignUp(){
     const [checkPass, setCheckPass] = useState('');
     
     const navigate = useNavigate();
+    const [authenticated, setAuthenticated] = useState(localStorage.getItem(localStorage.getItem('authenticated') || false));
 
 
 
@@ -129,7 +130,9 @@ function SignUp(){
                   setPassword('');
                   setPasswordconfirm('');
                   localStorage.setItem('email', email);
-                  navigate("/home");
+                  setAuthenticated(true);
+                  localStorage.setItem('authenticated', true);
+                  navigate('/home');
                 } else {
                   console.error('Failed to create user:', response.statusText);
                 }
