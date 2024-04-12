@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: center;
 }
-.maps .review-form{
+.maps .rev-form{
     display: flex;
     flex-direction: row;
     padding: 0;
@@ -54,7 +54,7 @@
     min-height: 30%;
     display: flex;
     flex-direction: column;
-    overflow: auto; /* Add vertical scrollbar when content exceeds max-height */
+    overflow: auto; 
 
 }
 
@@ -88,55 +88,50 @@
 .user-reviews-container::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0.1); 
 }
-/* 
-.user-reviews-container {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    width: 20vw;
-    padding: 1rem;
-    height: 100%;
-    margin-left: 60%;
-    margin-top: 6%;
-    position: absolute;
+
+.user-reviews-container-details::-webkit-scrollbar {
+    width: 15px;
+}
+
+.user-reviews-container-details::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5); 
+    border-radius: 5px; 
+}
+
+.user-reviews-container-details::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1); 
+}
+/* ------------------------------------------------------------- */
+
+.rev-form {
+    margin-left: 5%;
+    margin-top: 5%;
+    margin-bottom: 2.5%;
     border-left: 10px solid grey;
-    transition: transform 4s ease; 
-    transform: translateX(0);
+        
+    height: 70vh;
+    width: 25vw;
+    /* border-radius: 50%; */
+    /* background-color: aqua; */
 }
 
-.user-reviews-container.hide {
-    transform: translateX(100%); 
+
+.rev-form button{
+    background-color:  rgb(137, 225, 137);
+    margin-top: 5%;
 }
 
-.user-reviews-container-details {
-    border: 3px solid grey;
-    margin-top: 20%;
-    margin-left: 35%;
-    margin-bottom: 0;
-    width: 80%;
-    height: 30%;
-    display: flex;
-    flex-direction: column;
+.rev-form p{
+    font-size:  1.3rem;
 }
 
-.fields {
-    flex: 1;
-    display: flex;
-    padding: .5rem;
-    flex-direction: column;
-    justify-content: space-evenly;
-}
+.review-form-details{
+    margin-left: 27%;
+    margin-top: 10%;
+    width: 20vw;
 
-.user-reviews-container-back {
-    font-size: 1.3rem;
-    cursor: pointer;
-} */
-
-/* ---------------------------------------------------------- */
-
-
-.review-form{
-    /* background-color: red; */
+    /* padding-right:  100px;  */
+    /* background-color: blue; */
 }
 
 .review-form-back{
@@ -144,6 +139,7 @@
     /* background-color: red; */
     margin-bottom: 95%;
     margin-left: 18%;
+    margin-top: 6%;
     padding: 0rem;
 }
 .review-form-back button {
@@ -151,15 +147,17 @@
     padding: 0;
     cursor: pointer;
     border: none;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     background-color: white;
 }
-
-.review-form-details{
-    margin-left: 27%;
-
-    /* padding-right:  100px; */
-    /* background-color: blue; */
+.form-top{
+    display: flex;
+    flex-direction: row;
+}
+.form-col{
+    display: flex;
+    flex-direction: column;
+    margin: 2.5rem;
 }
 .hidden{
     visibility: hidden;
@@ -167,4 +165,5 @@
 .close{
     margin: 5rem;
 }
+
 

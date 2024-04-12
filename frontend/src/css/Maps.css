@@ -48,3 +48,8 @@
 
 }
 
+.infoWindow button{
+    padding: 4px;
+    cursor: pointer;
+    background-color: rgb(221, 219, 219);
+}

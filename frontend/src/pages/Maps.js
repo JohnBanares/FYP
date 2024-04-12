@@ -144,30 +144,13 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
       location: cord,
       radius: '2000',
       type: ['restaurant'],
-      keyword:  typeRef.current.value, 
+      query:  typeRef.current.value, 
     };
 
     // eslint-disable-next-line no-undef
     const service = new google.maps.places.PlacesService(map);
-    service.nearbySearch(request, callback);
+    service.textSearch(request, callback);
   };
-
-  
-  const findSpecificRoute = async(dest) =>{
-    //eslint-disable-next-line no-undef
-    const directionsService = new google.maps.DirectionsService();
-    const results = await directionsService.route({
-      origin: center,
-      destination: dest,
-      // eslint-disable-next-line no-undef
-      travelMode: google.maps.TravelMode.DRIVING,
-    })
-    setDirectionsResponse(results)
-    // console.log("orignn",center);
-    // console.log("dest",dest);
-
-  }
-
 
   const callback = (results, status) => {
     // eslint-disable-next-line no-undef
@@ -197,6 +180,22 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
       console.error('Places API request failed with status:', status);
     }
   };
+
+  
+  const findSpecificRoute = async(dest) =>{
+    //eslint-disable-next-line no-undef
+    const directionsService = new google.maps.DirectionsService();
+    const results = await directionsService.route({
+      origin: center,
+      destination: dest,
+      // eslint-disable-next-line no-undef
+      travelMode: google.maps.TravelMode.DRIVING,
+    })
+    setDirectionsResponse(results)
+    // console.log("orignn",center);
+    // console.log("dest",dest);
+
+  }
   //--------------------------------------------View API Reviews--------------------------------------------------------------------
   
   const getShowAPIReviews = (place_id) => {
@@ -263,10 +262,11 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
               position={selectedPositionType}
               onCloseClick={() => setSelectedPlaceType(null)}
             >
-              <div className='infoWindow'>
+              <div style={{ maxWidth: "300px"}} className='infoWindow'>
                 <h2>{selectedPlaceType.name}</h2>
-                <img src={foodImg} alt="temp image" height="60vh" width="100%" />
+                <img src={foodImg} alt="temp image" height="auto" width="100%" />
                 <h3>Cuisine Type: {typeRef.current.value}</h3> 
+                <h3>Rating: {selectedPlaceType.rating}</h3> 
                 <button onClick={handleShowReviewContainerType}>Write Review</button>
                 <button onClick={() => getShowAPIReviews(selectedPlaceType.place_id)} style={{marginLeft: "10px"}}>View Reviews</button>
                 <button onClick={()=>findSpecificRoute(selectedPositionType)} style={{marginLeft: "10px"}}>Get Directions</button>
@@ -280,10 +280,11 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
             <InfoWindow
               position={selectedPosition}
               onCloseClick={handleInfoWindowClose}
+              className='temp'
             >
               <div className='infoWindow'>
                 <h2>{selectedPlace.restaurantName}</h2>
-                <img src={foodImg} alt="temp image" height="60vh" width="100%" />
+                <img src={foodImg} alt="temp image" height="auto" width="100%" />
                 <h3>Cuisine Type: {selectedPlace.restaurantType}</h3> 
                 <button onClick={handleShowReviewContainer}>Write Review</button>
                 <button onClick={() => handleShowUserReviews()} style={{marginLeft: "10px"}}>View Reviews</button>
@@ -347,11 +348,11 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
             }}
           />
 
-          <div className="recommendation">
+          {/* <div className="recommendation">
             <button onClick={() => generateDefaultMarkers()}>Generate recommendation</button> 
             <button onClick={() => handleToggle()}>Clear</button>
         
-          </div>
+          </div> */}
         </div>)}
 
         {/* <div className="recommendation">
