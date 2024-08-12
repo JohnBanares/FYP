@@ -19,6 +19,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors());
 
+//use to access user imgaes
+app.use('/files', express.static(path.join(__dirname, 'files')));
+
+
 
 app.use((req, res, next) => {
     console.log(req.path, req.method)

@@ -3,8 +3,11 @@ import axios from "axios";
 import { useRef, useState, useEffect } from "react"
 import foodImg from "../images/food.png";
 import profileImg from "../images/stock.png";
+import blank from "../images/profile.png";
 import { CiEdit } from "react-icons/ci";
 import { FaCheck, FaSadCry } from "react-icons/fa";
+import { CgProfile } from "react-icons/cg";
+
 
 
 
@@ -73,6 +76,10 @@ function Profile(){
 
 
     const[image, setImage] = useState('yes');
+    const [uploadImage, setUploadImage] = useState(false);
+    const [imageSrc, setImageSrc] = useState('');
+
+
 
     useEffect(() => {
         setReadOnlyStateRating(Array(userReviews.length).fill(true));
@@ -92,8 +99,8 @@ function Profile(){
             const response = await axios.get(`http://localhost:3003/api/reviews/${username}`);
             //   console.log(response);
             setUserReviews(response.data);
-            console.log(usernameCopy);
-            console.log(username);
+            // console.log(usernameCopy);
+            // console.log(username);
 
               //   console.log(userReviews);
           } catch (error) {
@@ -103,6 +110,21 @@ function Profile(){
 
       fetchUserReviews();
     }, [username]);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try{
+                const response = await axios.get(`http://localhost:3003/api/users/${username}`);
+                console.log(response.data);
+                setImageSrc(`http://localhost:3003/files/${response.data.username}/${response.data.image}`)
+
+            } catch (error) {
+                console.error('Error fetching user reviews:', error);
+            }
+        };
+  
+        fetchUserData();
+      }, []);
 
     useEffect(() => {
         setSubButtons(Array(userReviews.length).fill(true));
@@ -719,21 +741,53 @@ function Profile(){
          }
        }
     }
-    // -------------------------------------------------------------------------------------------
+    // ---------------------------------------------t1---------------------------------------------
     // convert image to base64
-    // const convertImage = (e) => {
-    //     console.log(e);
-    //     const reader = new FileReader();
-    //     reader.readAsDataURL(e.target.files[0]);
-    //     reader.onload = () => {
-    //         console.log(reader.result);
-    //         setImage(reader.result);
-    //     };
-    //     reader.onerror = error => {
-    //         console.log("erorr", error);
-    //     }
-    // }
+    const convertImage = (e) => {
+        // console.log(e);
+        // const reader = new FileReader();
+        // reader.readAsDataURL(e.target.files[0]);
+        // reader.onload = () => {
+        //     console.log(reader.result);
+        //     setImage(reader.result);
+        // };
+        // reader.onerror = error => {
+        //     console.log("erorr", error);
+        // }
 
+        setImage(e.target.files[0]);
+
+    }
+
+    const showUploadImage = () => {
+        if(uploadImage){
+            setUploadImage(false);            
+        }
+        else{
+            setUploadImage(true);
+        }
+    };
+
+    const handleSaveImage =  async() => {
+        // e.preventDefault();
+        const formData = new FormData();
+        formData.append("file", image);
+        console.log(image);
+
+        const result = await axios.put(
+            `http://localhost:3003/api/users/${username}/update-image`,
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+          console.log(result);
+
+        if (result.status === 200) {
+            window.location.reload();
+        }
+        
+    }
     // const uploadImage = async() => {
     //     // console.log(`http://localhost:3003/api/users/${username}/update-image/${image}`);
     //     try{
@@ -774,17 +828,41 @@ function Profile(){
 			<div className="profile-info-container">
                 <div className="profile-info-container-sub">
                     <div className="profile-info-container-top">
-                        <h2> My Profile</h2>
-                       
-                        <img src={profileImg} alt="temp profile image" style={{margin: "0"}}/>
-                        {/* {image=="" || image== null?"": <img width={50} height={50} src={image}/>}
-                        <input
-                        type="file"
-                        accept="image/*"
-                        className="ci-edit-profile"
-                        onChange={convertImage}
-                        /> */}
+                        {/* <form onSubmit={handleSaveImage} style={{ all: 'unset' }}> */}
+                            <div className="profile-info-container-top-left">
+                                <h2> My Profile</h2>
+                            
+                            {/* t1 */}
+                                
+                                {imageSrc === `http://localhost:3003/files/${username}/stock.png` && (<CgProfile className="tempIcon"/>)}
+                                <img src={imageSrc} />
+                                {image !== "yes" && (<button onClick={() => handleSaveImage()} className="saveBtnImage">Submit</button>)}
 
+                            </div>
+                            
+                            <div className="profile-info-container-top-right">
+                                {/* {image=="" || image== null?"": <img width={50} height={50} src={image}/>} */}
+                                {!uploadImage && (<button  className="updateImage" onClick={() => showUploadImage()}>Update Profile Image</button>)}
+                                {uploadImage && (
+                                    <>
+                                        <button className="change-image-form-close-top" onClick={() => showUploadImage()}>&#215;</button>
+                                        {/* <label>Select Image</label> */}
+                                        <label class="image-chose">
+                                            Upload Image
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={convertImage}
+                                            className="change-image-input"
+                                        />
+                                        </label>
+                                        {/* {uploadImage && (<button onClick={() => handleSaveDetails()} className="saveBtnImage">Submit</button>)} */}
+
+
+                                    </>
+                                )}
+                            </div>
+                        {/* </form> */}
                     </div>
                     {/* <button 
                             style={{maxHeight:"40px",marginLeft: "18%", padding: "5px", fontSize: "1rem", fontWeight: "bold", backgroundColor: "grey", color: "white", border: "none", borderRadius: "20px"}}

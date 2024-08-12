@@ -25,7 +25,7 @@ const userSchema = new Schema({
    },
    image: {
       type: String,
-      required: false 
+      default: 'stock.png' 
    }
 })
 

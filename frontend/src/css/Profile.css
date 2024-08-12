@@ -77,10 +77,42 @@
 .profile-info-container-top{
     display: flex;
     justify-content: space-between;
-    padding: 1rem;
+    flex-direction: row;
+    padding: .5rem;
     border-bottom: 3px solid grey;
 
 }
+
+.profile-info-container-top-left{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.updateImage{
+    height: 4vh;
+    width: 90%;
+    margin: 1rem;
+    font-size: 1rem;
+    border-radius: 10px ;
+    border: none;
+    color: white;
+    cursor: pointer;
+    background-color: rgb(215, 202, 82);
+}
+.tempIcon{
+    font-size: 4rem;
+    font-weight: lighter;
+    margin-left: 1rem;
+}
+/* .ci-edit-profile {
+    position: absolute; 
+    left: 63%;
+    top: 53%;
+    font-size: 1rem;
+    cursor: pointer;
+    
+} */
 
 .profile-info-container-top img {
     border-radius: 50%;
@@ -194,6 +226,59 @@
 .change-password-form button:hover{
     cursor: pointer;
 }
+
+.change-image-form-close-top{
+    width: 2%;
+    border: none;
+    position: absolute;
+    left: 67%;
+    color: #ed2c1f;
+    cursor: pointer;
+    background-color: #fffff0;
+    font-size: 1.8rem;
+}
+
+.image-chose {
+    margin-top: 30px;
+    position: absolute;
+    left: 71%;
+    cursor: pointer;
+    background-color: rgb(215, 202, 82);
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    text-align: center;
+    display: inline-block;
+}
+
+.saveBtnImage{
+    background-color:  rgb(94, 187, 94);
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    text-align: center;
+    border: none;
+    /* position: absolute;
+    left: 50%; */
+    cursor: pointer;
+}
+.saveBtnImage:hover {
+    background-color: rgb(71, 142, 71);
+    border-color:  rgb(71, 142, 71);
+}
+
+.image-chose:hover {
+    background-color: rgb(155, 135, 70);
+    border-color: rgb(155, 135, 70);
+}
+
+.image-chose input[type="file"] {
+    display: none;
+}
+
+
 @media screen and (max-width: 1211px) {
     .profile-reviews-container {
         height: 70vh; /* Adjust the height for smaller screens */
@@ -205,11 +290,3 @@
 
 }
 
-.ci-edit-profile {
-    position: absolute; 
-    left: 63%;
-    top: 53%;
-    font-size: 1rem;
-    cursor: pointer;
-    
-}

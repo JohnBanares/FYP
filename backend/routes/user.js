@@ -7,6 +7,7 @@ const {
   updatePass,
   updateUsername,
   updateEmail,
+  updateImage,
 }=require('../contollers/userController')
 const router = express.Router()
 
@@ -17,6 +18,8 @@ router.post('/',createUser)
 router.put('/:username/update-pass/:newPass',updatePass)
 router.put('/:username/update-username/:usernameCopy',updateUsername)
 router.put('/:username/update-email/:emailCopy',updateEmail)
+router.put('/:username/update-image',updateImage)
+
 
   
 
