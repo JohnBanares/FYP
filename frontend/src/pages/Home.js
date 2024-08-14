@@ -40,6 +40,9 @@ function Home( apiKey) {
 	//store restuarnat reviews from maps 
 	const [apiReviews, setAPIReviews] = useState([]);
 
+	const[reviewImage, setReviewImage] = useState('yes');
+
+
 	const { isLoaded } = useJsApiLoader({
 		googleMapsApiKey,
 		libraries,
@@ -173,13 +176,18 @@ function Home( apiKey) {
   };
 
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
 
     if (rating === null || reviewText.trim() === '') {
       console.log("Please provide a rating and review text");
       return;
     }
+
+	if (reviewImage === 'yes') {
+		console.log("Please provide an image");
+		return;
+	}
     const num_rating = parseFloat(rating);
 
     //console.log("Hey" + username )
@@ -188,45 +196,111 @@ function Home( apiKey) {
 
 		setReviewContainer(false);
 
-		axios.post('http://localhost:3003/api/reviews/', {
-		username: username,
-		restaurantName: selectedPlaceHomeType.name,
-		rating: num_rating,
-		description: reviewText
-		})
-		.then(response => {
-			console.log('Review submitted successfully');
+		const formData = new FormData();
+		formData.append("username", username);
+		formData.append("restaurantName", selectedPlaceHomeType.name);
+		formData.append("rating", num_rating);
+		formData.append("description", reviewText);
+		formData.append("file", reviewImage);
+
+		try{
+			const result = await axios.post(
+				`http://localhost:3003/api/reviews/`,
+				formData,
+				{
+				  headers: { "Content-Type": "multipart/form-data" },
+				}
+			);
+
 			setRating(null);
 			setReviewText('');
 			setSelectedPlaceHome(null);
 			setSelectedPlaceHomeType(null);
-			return;
-		})
-		.catch(error => {
+			setReviewImage('yes');
+
+			console.log('Review submitted successfully:', result.data);
+
+		}catch(error){
 			console.log(error);
-		});
+		}
+	
+
+
+		// axios.post('http://localhost:3003/api/reviews/', {
+		// username: username,
+		// restaurantName: selectedPlaceHomeType.name,
+		// rating: num_rating,
+		// description: reviewText
+		// })
+		// .then(response => {
+		// 	console.log('Review submitted successfully');
+		// 	setRating(null);
+		// 	setReviewText('');
+		// 	setSelectedPlaceHome(null);
+		// 	setSelectedPlaceHomeType(null);
+		// 	return;
+		// })
+		// .catch(error => {
+		// 	console.log(error);
+		// });
 	}
 
 	if(selectedPlaceHomeType == null){
-		axios.post('http://localhost:3003/api/reviews/', {
-		username: username,
-		restaurantName: selectedPlaceHome.restaurantName,
-		rating: num_rating,
-		description: reviewText
-		})
-		.then(response => {
-			console.log('Review submitted successfully');
+
+		const formData = new FormData();
+		formData.append("username", username);
+		formData.append("restaurantName", selectedPlaceHomeType.name);
+		formData.append("rating", num_rating);
+		formData.append("description", reviewText);
+		formData.append("file", reviewImage);
+
+		try{
+			const result = await axios.post(
+				`http://localhost:3003/api/reviews/`,
+				formData,
+				{
+				  headers: { "Content-Type": "multipart/form-data" },
+				}
+			);
+
 			setRating(null);
 			setReviewText('');
 			setSelectedPlaceHome(null);
 			setSelectedPlaceHomeType(null);
-			return;
-		})
-		.catch(error => {
+			setReviewImage('yes');
+
+
+			console.log('Review submitted successfully:', result.data);
+
+		}catch(error){
 			console.log(error);
-		});
+		}
+		// axios.post('http://localhost:3003/api/reviews/', {
+		// username: username,
+		// restaurantName: selectedPlaceHome.restaurantName,
+		// rating: num_rating,
+		// description: reviewText
+		// })
+		// .then(response => {
+		// 	console.log('Review submitted successfully');
+		// 	setRating(null);
+		// 	setReviewText('');
+		// 	setSelectedPlaceHome(null);
+		// 	setSelectedPlaceHomeType(null);
+		// 	return;
+		// })
+		// .catch(error => {
+		// 	console.log(error);
+		// });
 	}
 };
+
+const convertImage = (e) => {
+
+	setReviewImage(e.target.files[0]);
+	console.log(reviewImage);
+
+}
 
 	return (
     	<>
@@ -309,6 +383,19 @@ function Home( apiKey) {
 					</div>
 						
 					{/* <textarea className="rating-box" ></textarea> */}
+
+					<div className='uploads'>
+						<label>
+							Upload a photo
+						<input
+							type="file"
+							accept="image/*"
+							onChange={convertImage}
+							className="change-image-input"
+						/>
+						</label>
+					</div>
+					
 					<h2>Description:</h2>
 					<textarea className="desc-box" style={{borderRadius: "10px"}} value={reviewText} onChange={(event) => setReviewText(event.target.value)}></textarea>
 					<button type="submit" className="confirm">Submit </button>

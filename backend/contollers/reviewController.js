@@ -1,4 +1,26 @@
 const { Reviews} = require('../models/reviewModel')
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const { username } = req.body;
+    const uploadDir = path.join('reviews', username);
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null, uniqueSuffix + file.originalname);
+  },
+})
+
+const upload = multer({ storage: storage }).single('file');
+
 
 const getReview = async (req, res) => {
     const reviews = await Reviews.find({}).sort({createdAt: -1})
@@ -6,16 +28,28 @@ const getReview = async (req, res) => {
 }
 
 const createReview = async (req, res) => {
-    const {username, restaurantName ,rating, description} = req.body
-    // console.log({username, rating, description});
-    try {
-      const review = await Reviews.create({username, restaurantName, rating, description});
-      console.log(review);
-      res.status(200).json(review)  ;
-    } catch (error) {
-      console.error('Error creating review:', error);
-      res.status(400).json({error: error.message});
-    }
+
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(500).json(err);
+      } else if (err) {
+        return res.status(500).json(err);
+      }
+      
+      const {username, restaurantName ,rating, description} = req.body
+      const filename = req.file ? req.file.filename : null;
+
+      // console.log({username, rating, description});
+      try {
+        const review = await Reviews.create({username, restaurantName, rating, description, image: filename});
+        console.log(review);
+        res.status(200).json(review)  ;
+      } catch (error) {
+        console.error('Error creating review:', error);
+        res.status(400).json({error: error.message});
+      }
+    })
+   
 }
 
 const getUserReviews = async (req, res) => {
