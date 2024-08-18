@@ -21,6 +21,7 @@ app.use(cors());
 
 //use to access user imgaes
 app.use('/files', express.static(path.join(__dirname, 'files')));
+app.use('/reviews', express.static(path.join(__dirname, 'reviews')));
 
 
 

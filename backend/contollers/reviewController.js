@@ -52,6 +52,35 @@ const createReview = async (req, res) => {
    
 }
 
+const updateReviewImage = async (req, res) => {
+
+  upload(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json(err);
+    } else if (err) {
+      return res.status(500).json(err);
+    }
+    
+    const {username, restaurantName, oldfile} = req.body
+    const filename = req.file ? req.file.filename : null;
+
+    const oldImagePath = path.join("reviews", username, oldfile);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+
+    // console.log({username, rating, description});
+    try {
+      const response = await Reviews.findOneAndUpdate({ restaurantName}, { image: filename });
+      console.log(response);
+    } catch (error) {
+      console.error('Error creating review:', error);
+      res.status(400).json({error: error.message});
+    }
+  })
+ 
+}
+
 const getUserReviews = async (req, res) => {
   const { username } = req.params;
 
@@ -70,7 +99,13 @@ const getUserReviews = async (req, res) => {
 }
 
 const deleteReview = async (req, res) => {
-  const { reviewId } = req.params;
+  const { reviewId, username } = req.params;
+
+  let review= await Reviews.findById(reviewId );
+  const oldImagePath = path.join('reviews', username, review.image);
+  if (fs.existsSync(oldImagePath)) {
+    fs.unlinkSync(oldImagePath);
+  }
 
   Reviews.findByIdAndDelete(reviewId)
     .then(result => {
@@ -149,6 +184,7 @@ const getUserReviewsByRestaurantName = async (req, res) => {
 
 module.exports = {
     createReview,
+    updateReviewImage,
     getReview,
     getUserReviews,
     deleteReview,

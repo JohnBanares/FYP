@@ -1,7 +1,7 @@
 import NavBar from "./NavBar";
 import axios from "axios";
 import { useRef, useState, useEffect } from "react"
-import foodImg from "../images/food.png";
+import foodImg from "../images/default.jpg";
 import profileImg from "../images/stock.png";
 import blank from "../images/profile.png";
 import { CiEdit } from "react-icons/ci";
@@ -79,6 +79,9 @@ function Profile(){
     const [uploadImage, setUploadImage] = useState(false);
     const [imageSrc, setImageSrc] = useState('');
 
+    const [inputImageValues, setInputImageValues] = useState([]);
+    const[imageReviewNew, setReviewImageNew] = useState('');
+
 
 
     useEffect(() => {
@@ -91,13 +94,16 @@ function Profile(){
         setInputDescValues(userReviews.map(review => review.description));
 
         setCheckRating(Array(userReviews.length).fill(null));
+
+        setInputImageValues(userReviews.map(review => review.image));
+
     }, [userReviews]);
 
     useEffect(() => {
       const fetchUserReviews = async () => {
           try{
             const response = await axios.get(`http://localhost:3003/api/reviews/${username}`);
-            //   console.log(response);
+            // console.log(response);
             setUserReviews(response.data);
             // console.log(usernameCopy);
             // console.log(username);
@@ -115,7 +121,7 @@ function Profile(){
         const fetchUserData = async () => {
             try{
                 const response = await axios.get(`http://localhost:3003/api/users/${username}`);
-                console.log(response.data);
+                // console.log(response.data);
                 setImageSrc(`http://localhost:3003/files/${response.data.username}/${response.data.image}`)
 
             } catch (error) {
@@ -124,7 +130,15 @@ function Profile(){
         };
   
         fetchUserData();
-      }, []);
+    }, []);
+
+      useEffect(() => {
+        console.log(inputImageValues);
+    }, [inputImageValues]);
+
+    // useEffect(() => {
+    //     console.log(imageReviewNew);
+    // }, [imageReviewNew]);
 
     useEffect(() => {
         setSubButtons(Array(userReviews.length).fill(true));
@@ -134,10 +148,36 @@ function Profile(){
         setDecisionContainer(Array(userReviews.length).fill(false));
     }, [userReviews]);
 
+
     function generateReviewList(){
         return userReviews.map((reviews, index) =>(
             <div key={index} className="profile-reviews-container-sub">
-                <img src={foodImg} alt="temp image" height="auto" width="100%" />           
+                {/* {<img src={foodImg} alt="temp image" height="auto" width="100%" />     }       */}
+
+                <div key={index} style={{position: "relative"}}>
+                    <img 
+                        src={reviews.image ? `http://localhost:3003/reviews/${reviews.username}/${reviews.image}` : foodImg}
+                        alt="temp" 
+                        style={{width: "100%", height: "280px", objectFit: "contain", border: "5px solid black" }}
+                    /> 
+
+                    {/* show edit image overlay */}
+                    {showEditDecision[index] && (
+                       <div className="image-overlay">
+                            <label>
+                                Upload a new photo
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="change-image-input"
+                                    onChange={setNewReviewImage}
+                                />
+                            </label>
+                        </div>
+                    )}
+                </div>
+
+
                 <h3>Restaurant Name: {reviews.restaurantName}</h3>
                 <h3>
                     Rating: 
@@ -272,48 +312,149 @@ function Profile(){
     }
 
     //saving changes
-    const saveReviewChanges = async(index, restaurantName) => {
-        const copyInputValuesDesc = [...inputDescValues];
-        const copyInputValuesRating = [...inputRatingValues];
-        const copyEditDescConfirm = [...editDescConfirm];
-        const copyEditRatingConfirm = [...editRatingConfirm];
+    // const saveReviewChanges = async(index, restaurantName) => {
+    //     const copyInputValuesDesc = [...inputDescValues];
+    //     const copyInputValuesRating = [...inputRatingValues];
+    //     const copyEditDescConfirm = [...editDescConfirm];
+    //     const copyEditRatingConfirm = [...editRatingConfirm];
+
+    //     //dont allow save while description confirm is on
+
+    //     const ratingChanged = copyInputValuesRating[index] !== revertRating;
+    //     const descriptionChanged = copyInputValuesDesc[index] !== revertDesc;
+    //     const imageChanged = inputImageValues[index] !== imageReviewNew;
+    //     // console.log("changing old image", inputImageValues[index]);
 
 
-        //dont allow save while description confirm is on
+    //     if(copyEditDescConfirm[index] || copyEditRatingConfirm[index]) return;
 
-        const ratingChanged = copyInputValuesRating[index] !== revertRating;
-        const descriptionChanged = copyInputValuesDesc[index] != revertDesc;
+    //     let update = false;
 
+    //     try{
 
-        if(copyEditDescConfirm[index] || copyEditRatingConfirm[index]) return;
+    //         if(imageChanged && imageReviewNew !== ''){
+    //             // console.log("image has changed");
+    //             // console.log(imageReviewNew.name);
+    //             // console.log(inputImageValues[index]);
+    
+    //             //dont allow to save default imagereview value
+    //             // if(imageReviewNew === '') return;
+    
+    //             const formData = new FormData();
+    //             formData.append("username", username);
+    //             formData.append("oldfile", inputImageValues[index]);
+    //             formData.append("file", imageReviewNew);
+    
+    //             await axios.put(
+    //                 `http://localhost:3003/api/reviews/update-review-image`,
+    //                 formData,
+    //                 {
+    //                 headers: { "Content-Type": "multipart/form-data" },
+    //                 }
+    //             );
+           
+    //             update = true;                    
+    //         }
 
-        if(ratingChanged){
-            const rating = copyInputValuesRating[index];
-            try{
-                const res = await axios.put(`http://localhost:3003/api/reviews//update-review-rating/${username}/${restaurantName}/${rating}`);
-            }catch(error){
-                console.log("no match");
-                return;
-            }            
-        }   
+    //         if(ratingChanged){
+    //             const rating = copyInputValuesRating[index];
+    //             await axios.put(`http://localhost:3003/api/reviews//update-review-rating/${username}/${restaurantName}/${rating}`);
+    //             update = true;
+    //         }      
+        
+    
+    //         if(descriptionChanged){
+    //             const description = copyInputValuesDesc[index];
+    //             await axios.put(`http://localhost:3003/api/reviews//update-review-description/${username}/${restaurantName}/${description}`);
+    //             update = true;
 
-        if(descriptionChanged){
-            const description = copyInputValuesDesc[index];
-            try{
-                const res = await axios.put(`http://localhost:3003/api/reviews//update-review-description/${username}/${restaurantName}/${description}`);
-            }catch(error){
-                console.log("no match");
-                return;
-            }      
+    //         }
+    
+    
+    //         if (update) {
+    //             window.location.reload();
+    //         }
+    //     }catch(error){
+    //         console.log(error);
+    //     }
+
+        
+    // }
+
+    // ------------------------------------------------------------------------------------------------
+    
+    const updateImage = async (index,restaurantName) => {
+        if (inputImageValues[index] === imageReviewNew || imageReviewNew === "") {
+            return false; 
         }
 
-        if(descriptionChanged || ratingChanged){
-            window.location.reload()
+        const formData = new FormData();
+        formData.append("username", username);
+        formData.append("restaurantName", restaurantName);
+        formData.append("oldfile", inputImageValues[index]);
+        formData.append("file", imageReviewNew);
+
+        try {
+            await axios.put(
+                `http://localhost:3003/api/reviews/update-review-image`,
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
+            return true;
+        } catch (error) {
+            console.error("Error updating image:", error);
+            return false;
         }
-     
+    };
 
+    const updateRating = async (index, restaurantName) => {
+        const rating = inputRatingValues[index];
+        if (rating === revertRating) {
+            return false; 
+        }
 
-    }
+        try {
+            await axios.put(
+                `http://localhost:3003/api/reviews/update-review-rating/${username}/${restaurantName}/${rating}`
+            );
+            return true;
+        } catch (error) {
+            console.error("Error updating rating:", error);
+            return false;
+        }
+    };
+
+    const updateDescription = async (index, restaurantName) => {
+        const description = inputDescValues[index];
+        if (description === revertDesc) {
+            return false; 
+        }
+
+        try {
+            await axios.put(
+                `http://localhost:3003/api/reviews/update-review-description/${username}/${restaurantName}/${description}`
+            );
+            return true;
+        } catch (error) {
+            console.error("Error updating description:", error);
+            return false;
+        }
+    };
+
+    const saveReviewChanges = async (index, restaurantName) => {
+        if (editDescConfirm[index] || editRatingConfirm[index]) return; 
+        const [imageUpdated, ratingUpdated, descriptionUpdated] = await Promise.all([
+            updateImage(index,restaurantName),
+            updateRating(index, restaurantName),
+            updateDescription(index, restaurantName)
+        ]);
+
+        if (imageUpdated || ratingUpdated || descriptionUpdated) {
+            window.location.reload(); 
+        }
+    };
+
+    
 
     //when user clicks edit button
     const handleEditReview = (index) => {
@@ -412,10 +553,13 @@ function Profile(){
 
         //set currenteditingindex to null to indicate that another can be edited
         setCurrentlyEditingIndex(null);
+
+        //set review image back to empty value
+        setReviewImageNew('');
             
     };
 
-    //when user clicks to edit field
+    //when user clicks to edit field rating
     const handleEditReviewDetailRating = (index) => {
 
         const copyRatingConfirm = [...editRatingConfirm]; 
@@ -440,7 +584,7 @@ function Profile(){
         }
     };
 
-    //when user clicks to edit field
+    //when user clicks to edit field description
     const handleEditReviewDetailDesc = (index) => {
 
         const copyReviewDesc = [...editReviewDesc]; 
@@ -506,7 +650,7 @@ function Profile(){
             try {
                 const reviewId = reviews._id;
                 console.log("id is", reviewId);
-                const response = await axios.delete(`http://localhost:3003/api/reviews/${reviewId}`);
+                const response = await axios.delete(`http://localhost:3003/api/reviews/${reviewId}/${username}`);
 
                 if(response){
                     // console.log(response);
@@ -788,6 +932,11 @@ function Profile(){
         }
         
     }
+    // t2
+
+    const setNewReviewImage = (e) => {
+        setReviewImageNew(e.target.files[0]);
+    }
     // const uploadImage = async() => {
     //     // console.log(`http://localhost:3003/api/users/${username}/update-image/${image}`);
     //     try{
@@ -834,7 +983,9 @@ function Profile(){
                             
                             {/* t1 */}
                                 
+                                {/* if user has no profile image show default icon */}
                                 {imageSrc === `http://localhost:3003/files/${username}/stock.png` && (<CgProfile className="tempIcon"/>)}
+
                                 <img src={imageSrc} />
                                 {image !== "yes" && (<button onClick={() => handleSaveImage()} className="saveBtnImage">Submit</button>)}
 
