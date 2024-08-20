@@ -129,6 +129,7 @@ function SignUp(){
                   setEmail('');
                   setPassword('');
                   setPasswordconfirm('');
+                  localStorage.setItem('username', username);
                   localStorage.setItem('email', email);
                   setAuthenticated(true);
                   localStorage.setItem('authenticated', true);

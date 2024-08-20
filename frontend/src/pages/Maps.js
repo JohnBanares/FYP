@@ -369,7 +369,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
                 <button onClick={handleShowReviewContainerType}>Write Review</button>
                 <button onClick={() => getShowAPIReviews(selectedPlaceType.place_id)} style={{marginLeft: "10px"}}>View Reviews</button>
                 <button onClick={()=>findSpecificRoute(selectedPositionType)} style={{marginLeft: "10px"}}>Get Directions</button>
-                <a href={placeUrl}>
+                <a href={placeUrl} style={{textDecoration : "none", marginTop: "10px"}}>
                   Visit Website
                 </a>
               </div>
@@ -406,8 +406,8 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
         
         {/* top buttons */}
         <div classname='top-buttons'>
-          <button  onClick={() => showSearchContainer()} style={{cursor: "pointer", height: "2rem",width: "4.1vw", padding: "2px",backgroundColor: "white" ,  position: "absolute"  , marginLeft: "20rem", marginTop: "2rem"}} >SearchType</button>
-          <button  onClick={() => showDirectionsContainer()} style={{cursor: "pointer", height: "2rem",width: "4.1vw", padding: "2px",backgroundColor: "white" ,  position: "absolute"  , marginLeft: "45rem", marginTop: "2rem"}} >Look Up Direction</button>
+          <button  onClick={() => showSearchContainer()} style={{cursor: "pointer", height: "2rem",width: "4.1vw", padding: "2px",backgroundColor: "#4d97af" ,  position: "absolute"  , marginLeft: "20rem", marginTop: "2rem"}} >SearchType</button>
+          <button  onClick={() => showDirectionsContainer()} style={{cursor: "pointer", height: "2rem",width: "4.1vw", padding: "2px",backgroundColor: "#4d97af" ,  position: "absolute"  , marginLeft: "45rem", marginTop: "2rem"}} >Look Up Direction</button>
         </div>
 
           {/* search buttons */}
@@ -416,9 +416,9 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
               placeholder="Enter Restaurant Type" 
               style={{backgroundColor: "white" ,  position: "absolute", marginLeft: "25rem"}}
               ref={typeRef}
-            /> 
-          <button onClick={() => fetchNearbyPlaces()} style={{cursor: "pointer", height: "1.7rem",width: "4.1vw", padding: "2px",backgroundColor: "#FFB4B4" ,  position: "absolute"  , marginLeft: "42rem", marginTop: ".2rem"}} >Search</button>
-          <button onClick={() =>resetSearxh()} style={{cursor: "pointer", height: "1.70rem",width: "4.1vw", padding: "2px",backgroundColor: "#D3D3D3" ,  position: "absolute"  , marginLeft: "42rem", marginTop: "2.3rem"}} >Reset</button>
+            />
+          <button onClick={() => fetchNearbyPlaces()} style={{cursor: "pointer", height: "1.7rem",width: "4.1vw", padding: "2px",backgroundColor: "#6fd96e" ,  position: "absolute"  , marginLeft: "42rem", marginTop: ".2rem"}} >Search</button>
+          <button onClick={() =>resetSearxh()} style={{cursor: "pointer", height: "1.70rem",width: "4.1vw", padding: "2px",backgroundColor: "#FFB4B4" ,  position: "absolute"  , marginLeft: "42rem", marginTop: "2.3rem"}} >Reset</button>
           <button onClick={handleShowAdvancedContainer} style={{cursor: "pointer", height: "1.8rem",width: "5vw", padding: "2px",backgroundColor: "#D3D3D3" ,  position: "absolute"  , marginLeft: "42rem", marginTop: "4.3rem"}} >Advanced Filters</button>
 
         </div>)}
