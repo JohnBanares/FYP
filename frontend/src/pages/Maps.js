@@ -51,10 +51,17 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
   const { filters } = useFilters();
   const { request, price, count } = filters;
 
+  let [placeUrl, setPlaceUrl] = useState('');
+
 
   const handleMarkerClickType = (place, position) => {
     setSelectedPlaceType(place);
     setselectedPositionType(position);
+    
+    let temp= place.place_id
+    //get url
+    // console.log("place is", temp);
+    getUrl(temp);
   };
 
   const randomCoordinates = [
@@ -119,7 +126,32 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
 
   const handleToggle = () => {
     setMarkers(null);
+
   }
+    //---------------------------------------Get Url ------------------------------------------------------
+
+    const getUrl = (place_id) => {
+      // console.log(place_id);
+      var request = {
+        placeId: place_id,
+        fields: ['url']
+      };
+      
+      // eslint-disable-next-line no-undef
+      const service = new google.maps.places.PlacesService(map);
+      service.getDetails(request, callback4);
+    
+    }
+  
+    const callback4 = (place, status) => {
+          // eslint-disable-next-line no-undef
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log('get url', place.url);
+        setPlaceUrl(place.url);
+      } else {
+        console.error('Failed to fetch reviews for place:', status);
+      }
+    }
 
     //---------------------------------------Advance search ------------------------------------------------------
 
@@ -268,7 +300,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     // console.log(place_id);
     var request = {
       placeId: place_id,
-      fields: ['reviews']
+      fields: ['reviews', 'url']
     };
   
     // eslint-disable-next-line no-undef
@@ -277,16 +309,16 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
   
   }
 
-    const callback2 = (place, status) => {
-          // eslint-disable-next-line no-undef
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log('get details',place);
-        console.log('Reviews:', place.reviews);
-        showAPIReviews(place.reviews);
-      } else {
-        console.error('Failed to fetch reviews for place:', status);
-      }
+  const callback2 = (place, status) => {
+        // eslint-disable-next-line no-undef
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      console.log('get details',place);
+      console.log('Reviews:', place.reviews);
+      showAPIReviews(place.reviews);
+    } else {
+      console.error('Failed to fetch reviews for place:', status);
     }
+  }
   
 
   const showDirectionsContainer = () => {
@@ -337,6 +369,9 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
                 <button onClick={handleShowReviewContainerType}>Write Review</button>
                 <button onClick={() => getShowAPIReviews(selectedPlaceType.place_id)} style={{marginLeft: "10px"}}>View Reviews</button>
                 <button onClick={()=>findSpecificRoute(selectedPositionType)} style={{marginLeft: "10px"}}>Get Directions</button>
+                <a href={placeUrl}>
+                  Visit Website
+                </a>
               </div>
             </InfoWindow>
           )}
