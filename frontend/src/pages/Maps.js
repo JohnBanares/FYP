@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Autocomplete, DirectionsRenderer } from '@react-google-maps/api';
 import foodImg from '../images/food.png';
 import { IoNavigate } from "react-icons/io5";
+import { useFilters } from './FiltersContext'; // Adjust path as needed
+
 
 
 const mapContainerStyle = {
@@ -24,7 +26,7 @@ const fakePlace1 = {
 };
 
 
-const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isLoaded, showAPIReviews}) => {
+const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isLoaded, showAPIReviews, showAdvancedContainer}) => {
 
   const [restaurants, setRestaurants] = useState([]);
   const [markers, setMarkers] = useState([]);
@@ -44,6 +46,10 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
   const [selectedPositionType, setselectedPositionType] = useState(null);
 
   const [apiReviews, setAPIReviews] = useState([]);
+  
+
+  const { filters } = useFilters();
+  const { request, price, count } = filters;
 
 
   const handleMarkerClickType = (place, position) => {
@@ -102,6 +108,10 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     showReviewContainerType(selectedPlaceType);
   };
 
+  const handleShowAdvancedContainer = () => {
+    showAdvancedContainer();
+  }
+
   //pass prop to parent component
   const handleShowUserReviews = () => {
     showUserReviews(selectedPlace);
@@ -111,6 +121,55 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     setMarkers(null);
   }
 
+    //---------------------------------------Advance search ------------------------------------------------------
+
+    useEffect(() => {
+      // Log the filters whenever they change
+      // console.log('Filters updated:', { request, price, count });
+  
+      if (isLoaded && map) {
+        showAdavanceMarker();
+      }
+  
+    }, [request, price, count]);
+
+    const showAdavanceMarker = () => {
+               
+      // eslint-disable-next-line no-undef
+      const service = new google.maps.places.PlacesService(map);
+      service.textSearch(request, callback3) 
+    }
+
+    const callback3 = (results, status) => {
+      // eslint-disable-next-line no-undef
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log('Results:', results);
+
+        //map specifc places markers
+        const filteredResults = results
+        .filter(place => place.price_level === price) 
+        .filter(place => place.rating > count); 
+
+        console.log('Filtered Results:', filteredResults);
+
+      // Map specific places markers
+        const newMarkers = filteredResults.map((place, index) => {
+          const { lat, lng } = place.geometry.location;
+    
+            return (
+              <Marker
+                key={index}
+                position={{ lat: lat(), lng: lng() }}
+                onClick={() => handleMarkerClickType(place, { lat: lat(), lng: lng() })}
+    
+              />
+            );
+          });
+          setPlacesMarkers(newMarkers);
+      } else {
+        console.error('Places API request failed with status:', status);
+      }
+    };
 
   //---------------------------------------Calculate route ------------------------------------------------------
   const calculateRoute = async() => {
@@ -150,6 +209,13 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     // eslint-disable-next-line no-undef
     const service = new google.maps.places.PlacesService(map);
     service.textSearch(request, callback);
+
+    // service.textSearch(request, (results, status) => {
+    
+    //   const filteredResults = results.filter(place => place.takeout === true);
+    //   callback(filteredResults, status);
+    // });
+
   };
 
   const callback = (results, status) => {
@@ -214,6 +280,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     const callback2 = (place, status) => {
           // eslint-disable-next-line no-undef
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        console.log('get details',place);
         console.log('Reviews:', place.reviews);
         showAPIReviews(place.reviews);
       } else {
@@ -315,8 +382,10 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
               style={{backgroundColor: "white" ,  position: "absolute", marginLeft: "25rem"}}
               ref={typeRef}
             /> 
-          <button onClick={() => fetchNearbyPlaces()} style={{cursor: "pointer", height: "1.7rem",width: "4.1vw", padding: "2px",backgroundColor: "#FFB4B4" ,  position: "absolute"  , marginLeft: "42rem", marginTop: ".2rem"}} >search</button>
+          <button onClick={() => fetchNearbyPlaces()} style={{cursor: "pointer", height: "1.7rem",width: "4.1vw", padding: "2px",backgroundColor: "#FFB4B4" ,  position: "absolute"  , marginLeft: "42rem", marginTop: ".2rem"}} >Search</button>
           <button onClick={() =>resetSearxh()} style={{cursor: "pointer", height: "1.70rem",width: "4.1vw", padding: "2px",backgroundColor: "#D3D3D3" ,  position: "absolute"  , marginLeft: "42rem", marginTop: "2.3rem"}} >Reset</button>
+          <button onClick={handleShowAdvancedContainer} style={{cursor: "pointer", height: "1.8rem",width: "5vw", padding: "2px",backgroundColor: "#D3D3D3" ,  position: "absolute"  , marginLeft: "42rem", marginTop: "4.3rem"}} >Advanced Filters</button>
+
         </div>)}
 
           {/* direction buttons */}

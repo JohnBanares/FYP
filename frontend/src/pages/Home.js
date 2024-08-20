@@ -1,13 +1,23 @@
 import axios from 'axios'
 import * as tf from '@tensorflow/tfjs'
 import * as d3 from 'd3'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaSearch, FaStar } from "react-icons/fa"
 import { IoMdArrowRoundForward } from "react-icons/io";
 import "../css/Home.css"
 import foodImg from '../images/food.png';
 import { useJsApiLoader } from '@react-google-maps/api';
+import { GiPathDistance } from "react-icons/gi";
+import { AiTwotoneStar } from "react-icons/ai";
+import { MdOutlineFoodBank } from "react-icons/md";
+import { VscLocation } from "react-icons/vsc";
+import { useFilters } from './FiltersContext';
+
+
+
+
+
 // import dataTSV from '../images/Restaurant_Reviews.tsv'
 import NavBar from "./NavBar"
 import Maps from "./Maps"
@@ -41,6 +51,18 @@ function Home( apiKey) {
 	const [apiReviews, setAPIReviews] = useState([]);
 
 	const[reviewImage, setReviewImage] = useState('yes');
+
+	const [advancedContainer, setAdvancedContainer] = useState(false);
+	const [selectedPrice, setSelectedPrice] = useState(null);
+	let [count, setCount] = useState(1);
+	let [countRaidus, setRadiusCount] = useState(1);
+	const [area, setArea] = useState('');
+	const [cuisine, setCuisine] = useState('')
+	const { updateFilters } = useFilters();
+
+
+
+
 
 
 	const { isLoaded } = useJsApiLoader({
@@ -130,10 +152,23 @@ function Home( apiKey) {
 
   	//write review container from db restaurants
 	const showReviewContainer = (place) => {
+		console.log(place);
 		setReviewContainer(true);
 		setSelectedPlaceHome(place);
 	};
+	
+	//display advanced search container
+	const showAdvancedContainer = () => {
+		// console.log("showing advanced");
+		setAdvancedContainer(true);
+	};
 
+	const closeAdvancedContainer = () => {
+		// console.log("showing advanced");
+		setAdvancedContainer(false);
+	};
+
+	//close writing review container
 	const closeReviewContainer = () => {
 		setReviewContainer(false);
 		setSelectedPlaceHome(null);
@@ -148,6 +183,7 @@ function Home( apiKey) {
 
 	};
 
+	//display user written reviews 
 	const showAPIReviews = (reviews) => {
 		setShowReview(true);
     	setAPIReviews(reviews);
@@ -295,22 +331,83 @@ function Home( apiKey) {
 	}
 };
 
-const convertImage = (e) => {
+	const convertImage = (e) => {
 
-	setReviewImage(e.target.files[0]);
-	console.log(reviewImage);
+		setReviewImage(e.target.files[0]);
+		console.log(reviewImage);
 
-}
+	}
+
+	const handleAreaChange = (e) => setArea(e.target.value);
+  	const handleCuisineChange = (e) => setCuisine(e.target.value);
+
+	const handleCheckboxChange = (value) => {
+		if (selectedPrice === value) {
+			setSelectedPrice(null);
+		} else {
+			setSelectedPrice(value);
+		}
+	};
+
+	const incrementCount = () =>{
+		if (count < 5) { 
+			setCount(count + 1);
+		}
+	}
+
+	const decrementCount = () =>{
+		if (count > 1) { 
+			setCount(count - 1);
+		  }
+	}
+
+	const incrementRadiusCount = () =>{
+		if (countRaidus < 10) { 
+			setRadiusCount(countRaidus + 1);
+		}
+	}
+
+	const decrementRadiusCount = () =>{
+		if (countRaidus > 1) { 
+			setRadiusCount(countRaidus - 1);
+		  }
+	}
+
+	const applyFilters = () =>{
+		let price = Number(selectedPrice);
+		let combinedquery = area + " " + cuisine;
+		let distance = String(countRaidus * 1000);
+		const cord = { lat: 53.349805, lng: -6.26031 };
+
+
+
+		const request = {
+			location: cord,
+			radius: distance,
+			type: ['restaurant'],
+			query: combinedquery, 
+		};
+
+		// console.log("applying filters");
+		// console.log(request, price, count);
+		updateFilters({ request, price, count });
+
+		// console.log(distance);
+
+		// // console.log(cuisineRef.current.value);
+		// console.log(price);
+		// console.log(count);
+	}
 
 	return (
     	<>
       	<NavBar />
       	<div className='home'>
         	<div className='maps'>
-          	<Maps showReviewContainer={showReviewContainer} showReviewContainerType={showReviewContainerType} showUserReviews={showUserReviews} isLoaded={isLoaded} showAPIReviews={showAPIReviews}/>
+          	<Maps showReviewContainer={showReviewContainer} showReviewContainerType={showReviewContainerType} showUserReviews={showUserReviews} isLoaded={isLoaded} showAPIReviews={showAPIReviews} showAdvancedContainer={showAdvancedContainer}/>
          
           
-        	{!reviewContainer && showReview && (<div  className="user-reviews-container">
+        	{!reviewContainer && showReview && !advancedContainer && (<div  className="user-reviews-container">
            		<IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => showUserReviewsContainer()}/>
             	{apiReviews.map((review, index) => (
                 	<div key={index} className="user-reviews-container-details">
@@ -322,21 +419,59 @@ const convertImage = (e) => {
                     	</div>
                 	</div>
              	 ))}   
-        	</div>)}
+			</div>)}
+			
+			{/* show */}
+			{advancedContainer && (<div  className="user-reviews-container">
+				<IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => closeAdvancedContainer()}/>
+				<div className='advanced-search-outer'>
 
-			{/* {!reviewContainer && showReview && (<div  className="user-reviews-container">
-           		<IoMdArrowRoundForward  className='user-reviews-container-back' onClick={() => showUserReviewsContainer()}/>
-            	{apiReviews.map((review, index) => (
-                	<div key={index} className="user-reviews-container-details">
-                    	<img src={foodImg} alt="temp image" height="50%" width="100%" />
-                    	<div className="fields">
-                        	<h3>Username: {review.username}</h3>
-                        	<h3>Rating: {review.rating}</h3>
-                        	<h3>Review: {review.description}</h3>
-                    	</div>
-                	</div>
-             	 ))}   
-        	</div>)} */}
+					<div className='advanced-search-inner'>
+
+						<div className='advanced-search-cuisine'>
+							<h3>Area </h3>
+							<VscLocation className='area'/>:
+							<input type='text' className='advanced-input' placeholder='e.g Dublin, City'onChange={handleAreaChange}/> 
+
+						</div>
+
+						<div className='advanced-search-cuisine'>
+							<h3>Cuisine Type </h3>
+							<MdOutlineFoodBank className='cuisine' />:
+							<input type='text'  className='advanced-input' placeholder='e.g Italian'onChange={handleCuisineChange}/>
+
+						</div>
+
+						<div className='advanced-search-price'>
+							<h3>Price Range €: </h3>
+							<input type="checkbox" value="1"  name="priceRange" checked={selectedPrice === '1'} onChange={() => handleCheckboxChange('1')}/>  € 10-20
+							<input type="checkbox" value="2"  name="priceRange" checked={selectedPrice === '2'} onChange={() => handleCheckboxChange('2')}/>  € 20-30
+							<input type="checkbox" value="3" name="priceRange" checked={selectedPrice === '3'} onChange={() => handleCheckboxChange('3')}/> {' € > 30'}
+						</div>
+
+						<div className='advanced-search-rating'>
+							<h3>Minimum Rating </h3>
+							<AiTwotoneStar className='star-rating'/>:	
+							<button style={{width: "25px", height: "25px"}} onClick={() => incrementCount()}>+</button>
+							<div>{count} Stars</div>
+							<button  style={{width: "25px", height: "25px"}} onClick={() => decrementCount()}>-</button>
+						</div>
+
+						<div className='advanced-search-radius'>
+							<h3>Search Radius </h3> 
+							<GiPathDistance className='within'/>:
+							<button style={{width: "25px", height: "25px"}} onClick={incrementRadiusCount}>+</button>
+							<div>{countRaidus} KM</div>
+							<button  style={{width: "25px", height: "25px"}} onClick={decrementRadiusCount}>-</button>
+						</div>
+
+						<div className='advance-button'>
+							<button className='apply-filter' onClick={applyFilters}>Apply Filters</button>
+						</div>
+
+					</div>
+				</div>
+        	</div>)}
 
         	<div className={`rev-form ${reviewContainer ? '' : 'hidden'}`}>
 

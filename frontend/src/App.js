@@ -8,6 +8,7 @@ import Review from './pages/Review'
 import Login from './pages/Login'
 import SignUp from './pages/Signup'
 import Profile from './pages/Profile'
+import { FiltersProvider } from './pages/FiltersContext'
 
 function App() {
   console.log(process.env.REACT_APP_TEMP);
@@ -15,6 +16,7 @@ function App() {
     <div className="App">
       
       <BrowserRouter>
+      <FiltersProvider> 
       <div className='pages'>
         <Routes>
           <Route path="/home" element={<Home />} />
@@ -24,6 +26,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
+      </FiltersProvider>
       </BrowserRouter>
     </div>
   );
