@@ -7,6 +7,9 @@ import blank from "../images/profile.png";
 import { CiEdit } from "react-icons/ci";
 import { FaCheck, FaSadCry } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
+import { HiOutlineMail } from "react-icons/hi";
+import { FaRegUser } from "react-icons/fa";
+
 
 
 
@@ -41,8 +44,11 @@ function Profile(){
     const [authPass, setAuthPass] = useState(false);
     const [authMatchPass, setAuthMatchPass] = useState(false);
 
-    const inputRef = useRef(null);
-    const [readOnlyVal, setReadOnlyVal] = useState(true);
+    const inputRefUsername = useRef(null);
+    const inputRefEmail = useRef(null);
+
+    const [readOnlyValUsername, setReadOnlyValUsername] = useState(true);
+    const [readOnlyValEmail, setReadOnlyValEmail] = useState(true);
     const [detailsAuth, setdetailsAuth] = useState('');
 
 
@@ -381,7 +387,7 @@ function Profile(){
         
     // }
 
-    // ------------------------------------------------------------------------------------------------
+    // -----------------------------------------Update review fields----------------------------------------------------
     
     const updateImage = async (index,restaurantName) => {
         if (inputImageValues[index] === imageReviewNew || imageReviewNew === "") {
@@ -766,10 +772,15 @@ function Profile(){
         }
     };
 
-    const handleEditDetailsClick = () => {
-        inputRef.current.focus();
-        setReadOnlyVal(false);
+    const handleEditDetailsClickUsername = () => {
+        inputRefUsername.current.focus();
+        setReadOnlyValUsername(false);
     };
+
+    const handleEditDetailsClickEmail = () => {
+        inputRefEmail.current.focus();
+        setReadOnlyValEmail(false)
+    }
 
     const handleSaveDetails = async() => {
         console.log("usernaeCopy si", usernameCopy);
@@ -1020,27 +1031,51 @@ function Profile(){
                             onClick={()=>uploadImage()}
                         >Update Profile Image:</button> */}
 
+                    {/* t3 */}
+
                     {!showChangeContainer && !okMessage && (
                         <div className="profile-info-container-bottom">
                             <div className="profile-info-container-bottom-text">
                                 <button onClick={() => handleEditClick()}>Edit</button>
+                                <div style={{display: "flex", alignItems: "center", textAlign: "center", flexDirection: "row", gap: "7px"}}>
                                 <label>
-                                    Username: 
-                                    <input type="text" value={usernameCopy}  ref={inputRef} readOnly={readOnlyVal} onChange={(event) => setUsernameCopy(event.target.value)}/>
+                                    Username 
+                                    {/* <input type="text" value={usernameCopy}  ref={inputRef} readOnly={readOnlyVal} onChange={(event) => setUsernameCopy(event.target.value)}/>
                                     {editInfo && (
                                         <CiEdit className="ci-edit" onClick={handleEditDetailsClick}/>
-                                    )}
+                                    )} */}
                                 </label>
+
+                                <FaRegUser />:
+
+                                <input type="text" value={usernameCopy}  ref={inputRefUsername} readOnly={readOnlyValUsername} onChange={(event) => setUsernameCopy(event.target.value)}/>
+                                {editInfo && (
+                                    <CiEdit className="ci-edit" onClick={handleEditDetailsClickUsername}/>
+                                )}
+                                </div>
+                                
                                {detailsAuth === "UserExists" && ( <p className="errorMessage" style={{ fontSize: ".9rem" }}>
                                     Username already exists
                                 </p> )}
-                                <label>
-                                    Email: 
-                                    <input type="email" value={emailCopy} ref={inputRef} readOnly={readOnlyVal} onChange={(event) => setEmailCopy(event.target.value)} /> 
+
+                                {/* <HiOutlineMail />: */}
+                                <div style={{display: "flex", alignItems: "center", textAlign: "center", flexDirection: "row", gap: "7px"}}>
+                                    <label>
+                                        Email: 
+                                        {/* <input type="email" value={emailCopy} ref={inputRef} readOnly={readOnlyVal} onChange={(event) => setEmailCopy(event.target.value)} /> 
+                                        {editInfo && (
+                                            <CiEdit className="ci-edit"  onClick={handleEditDetailsClick}/>
+                                        )} */}
+                                    </label>
+
+                                    <HiOutlineMail />:
+
+                                    <input type="email" value={emailCopy} ref={inputRefEmail} readOnly={readOnlyValEmail} onChange={(event) => setEmailCopy(event.target.value)} /> 
                                     {editInfo && (
-                                        <CiEdit className="ci-edit"  onClick={handleEditDetailsClick}/>
+                                        <CiEdit className="ci-edit"  onClick={handleEditDetailsClickEmail}/>
                                     )}
-                                </label>
+                                </div>
+
                                {detailsAuth === "EmailExists" &&( <p className="errorMessage" style={{ fontSize: ".9rem" }}>
                                     Email already exist
                                 </p> )}
