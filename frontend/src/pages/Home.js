@@ -160,6 +160,7 @@ function Home( apiKey) {
 	//display advanced search container
 	const showAdvancedContainer = () => {
 		// console.log("showing advanced");
+		setReviewContainer(false);
 		setAdvancedContainer(true);
 	};
 
@@ -178,6 +179,7 @@ function Home( apiKey) {
 
 	//wrtie review from api restaurants
 	const showReviewContainerType = (place) => {
+		setAdvancedContainer(false);
     	setReviewContainer(true);
     	setSelectedPlaceHomeType(place);
 
@@ -259,26 +261,7 @@ function Home( apiKey) {
 		}catch(error){
 			console.log(error);
 		}
-	
 
-
-		// axios.post('http://localhost:3003/api/reviews/', {
-		// username: username,
-		// restaurantName: selectedPlaceHomeType.name,
-		// rating: num_rating,
-		// description: reviewText
-		// })
-		// .then(response => {
-		// 	console.log('Review submitted successfully');
-		// 	setRating(null);
-		// 	setReviewText('');
-		// 	setSelectedPlaceHome(null);
-		// 	setSelectedPlaceHomeType(null);
-		// 	return;
-		// })
-		// .catch(error => {
-		// 	console.log(error);
-		// });
 	}
 
 	if(selectedPlaceHomeType == null){
@@ -311,23 +294,6 @@ function Home( apiKey) {
 		}catch(error){
 			console.log(error);
 		}
-		// axios.post('http://localhost:3003/api/reviews/', {
-		// username: username,
-		// restaurantName: selectedPlaceHome.restaurantName,
-		// rating: num_rating,
-		// description: reviewText
-		// })
-		// .then(response => {
-		// 	console.log('Review submitted successfully');
-		// 	setRating(null);
-		// 	setReviewText('');
-		// 	setSelectedPlaceHome(null);
-		// 	setSelectedPlaceHomeType(null);
-		// 	return;
-		// })
-		// .catch(error => {
-		// 	console.log(error);
-		// });
 	}
 };
 
