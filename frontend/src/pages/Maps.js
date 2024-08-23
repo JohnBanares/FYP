@@ -146,7 +146,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     const callback4 = (place, status) => {
           // eslint-disable-next-line no-undef
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log('get url', place.url);
+        console.log("get url", place.url);
         setPlaceUrl(place.url);
       } else {
         console.error('Failed to fetch reviews for place:', status);
@@ -175,14 +175,14 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     const callback3 = (results, status) => {
       // eslint-disable-next-line no-undef
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log('Results:', results);
+        console.log("Results:", results);
 
         //map specifc places markers
         const filteredResults = results
         .filter(place => place.price_level === price) 
         .filter(place => place.rating > count); 
 
-        console.log('Filtered Results:', filteredResults);
+        console.log("Filtered Results:", filteredResults);
 
       // Map specific places markers
         const newMarkers = filteredResults.map((place, index) => {

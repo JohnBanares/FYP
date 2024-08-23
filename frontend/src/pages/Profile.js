@@ -981,7 +981,12 @@ function Profile(){
                 <button>Delete</button>
                 <button>Modify</button>
                 </div> */}
-                {generateReviewList()}
+                {/* {generateReviewList()} */}
+                {userReviews.length > 0 && (generateReviewList())}
+
+                {userReviews.length === 0 &&(<div className="no-reviews">
+                    <h3>No reviews available</h3>
+                </div>)}
 
 			</div>
 

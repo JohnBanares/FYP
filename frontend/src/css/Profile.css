@@ -30,6 +30,12 @@
     background-color: rgba(0, 0, 0, 0.1); 
 }
 
+.no-reviews{
+    width: 70%;
+    border: 5px solid grey;
+    margin: 1rem 0 1rem 6rem;
+    padding: 1rem;
+}
 
 .profile-reviews-container-sub{
     width: 70%;
@@ -66,6 +72,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    /* background-color: red; */
+    border-left: 10px solid grey;
 }
 
 .profile-info-container-sub{
@@ -153,7 +161,7 @@
 }
 .ci-edit {
     position: absolute; 
-    right: 40%;
+    right: 35%;
 }
 .ci-edit:hover{
     cursor: pointer;
