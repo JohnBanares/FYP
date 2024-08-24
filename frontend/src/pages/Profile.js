@@ -816,6 +816,7 @@ function Profile(){
             }
         }
 
+
         setdetailsAuth("noDups");  
         if(usernameChanged){ 
             try{
