@@ -119,15 +119,39 @@ const updatePass = async (req, res) => {
 const updateUsername = async (req, res) => {
   const { username, usernameCopy } = req.params;
 
-  Users.findOneAndUpdate({ username}, { username: usernameCopy })
-    .then(result => {
-      console.log(result);
-      res.status(200).json({ message: "Username updated successfully" });
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
-    });
+  // Users.findOneAndUpdate({ username}, { username: usernameCopy })
+  //   .then(result => {
+  //     console.log(result);
+  //     res.status(200).json({ message: "Username updated successfully" });
+  //   })
+  //   .catch(error => {
+  //     console.error(error);
+  //     res.status(500).json({ error: "Internal server error" });
+  //   });
+  try{
+    const user = await Users.findOneAndUpdate({ username }, { username: usernameCopy });
+
+    if (!user) {
+      return res.status(404).json({ error: 'No such user' });
+    }
+
+    if (user.image) {
+      const oldImagePath = path.join('files', username, user.image);
+      const newImagePath = path.join('files', usernameCopy, user.image);
+      const oldFolderPath = path.join('files', username); 
+
+      if (fs.existsSync(oldImagePath)) {
+        fs.mkdirSync(path.dirname(newImagePath), { recursive: true });
+        fs.renameSync(oldImagePath, newImagePath);
+        fs.rmSync(oldFolderPath, { recursive: true });
+      }
+    }
+
+    res.status(200).json({ message: "username updated successfully" });
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 const updateEmail = async (req, res) => {

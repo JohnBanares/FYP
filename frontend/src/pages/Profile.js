@@ -114,6 +114,7 @@ function Profile(){
             // console.log(usernameCopy);
             // console.log(username);
 
+
               //   console.log(userReviews);
           } catch (error) {
               console.error('Error fetching user reviews:', error);
@@ -126,8 +127,8 @@ function Profile(){
     useEffect(() => {
         const fetchUserData = async () => {
             try{
-                const response = await axios.get(`http://localhost:3003/api/users/${username}`);
-                // console.log(response.data);
+                const response = await axios.get(`http://localhost:3003/api/users/${email}`);
+                console.log(response.data);
                 setImageSrc(`http://localhost:3003/files/${response.data.username}/${response.data.image}`)
 
             } catch (error) {
@@ -136,10 +137,12 @@ function Profile(){
         };
   
         fetchUserData();
-    }, []);
+    }, [username]);
 
       useEffect(() => {
         console.log(inputImageValues);
+        // console.log(username);
+
     }, [inputImageValues]);
 
     // useEffect(() => {
