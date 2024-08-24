@@ -65,9 +65,9 @@ const updateReviewImage = async (req, res) => {
     const filename = req.file ? req.file.filename : null;
 
     const oldImagePath = path.join("reviews", username, oldfile);
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
-      }
+    if (fs.existsSync(oldImagePath)) {
+      fs.unlinkSync(oldImagePath);
+    }
 
     // console.log({username, rating, description});
     try {
