@@ -135,6 +135,28 @@ const updateUsername = async (req, res) => {
       return res.status(404).json({ error: 'No such user' });
     }
 
+    const oldReviewsPath = path.join('reviews', username);
+    const newReviewsPath = path.join('reviews', usernameCopy);
+
+    if (fs.existsSync(oldReviewsPath)) {
+      fs.mkdirSync(newReviewsPath, { recursive: true });
+
+      // fetch files in the old path
+      const files = fs.readdirSync(oldReviewsPath);
+
+      for (const file of files) {
+        const oldFilePath = path.join(oldReviewsPath, file);
+        const newFilePath = path.join(newReviewsPath, file);
+
+        fs.renameSync(oldFilePath, newFilePath);
+      }
+
+      if (fs.readdirSync(oldReviewsPath).length === 0) {
+        fs.rmdirSync(oldReviewsPath);
+      }
+    }
+
+
     if (user.image) {
       const oldImagePath = path.join('files', username, user.image);
       const newImagePath = path.join('files', usernameCopy, user.image);
