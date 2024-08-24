@@ -146,7 +146,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     const callback4 = (place, status) => {
           // eslint-disable-next-line no-undef
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log("get url", place.url);
+        // console.log("get url", place.url);
         setPlaceUrl(place.url);
       } else {
         console.error('Failed to fetch reviews for place:', status);
@@ -314,6 +314,8 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       console.log('get details',place);
       console.log('Reviews:', place.reviews);
+      // const photos = place.photos[0].getUrl();
+      // console.log('Photo:', photos);
       showAPIReviews(place.reviews);
     } else {
       console.error('Failed to fetch reviews for place:', status);
@@ -363,7 +365,7 @@ const Maps = ({showReviewContainer,showReviewContainerType, showUserReviews, isL
             >
               <div style={{ maxWidth: "300px"}} className='infoWindow'>
                 <h2>{selectedPlaceType.name}</h2>
-                <img src={foodImg} alt="temp image" height="auto" width="100%" />
+                <img src={selectedPlaceType.photos[0].getUrl()} alt="temp image" height="auto" width="100%" />
                 <h3>Cuisine Type: {typeRef.current.value}</h3> 
                 <h3>Rating: {selectedPlaceType.rating}</h3> 
                 <button onClick={handleShowReviewContainerType}>Write Review</button>
